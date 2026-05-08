@@ -17,39 +17,54 @@ const isFIRTrigger = (msg) => {
   return triggers.some(t => msg?.toLowerCase().includes(t));
 };
 
-// FIR questions in 3 languages
+// FIR questions in 4 languages
 const FIR_QUESTIONS = {
   en: [
     "What happened? Please describe briefly.",
     "When did it happen? (date and time if you remember)",
     "Who did this? (only their relation to you, e.g. husband, in-law — no full names needed)",
     "Were there any witnesses?",
-    "Were there any injuries or damage?"
+    "Were there any injuries or damage? (one message please)"
   ],
   hi: [
     "क्या हुआ? कृपया संक्षेप में बताएं।",
     "कब हुआ? (तारीख और समय अगर याद हो)",
     "किसने किया? (सिर्फ रिश्ता बताएं जैसे पति, सास — पूरा नाम जरूरी नहीं)",
     "कोई गवाह था?",
-    "कोई चोट या नुकसान हुआ?"
+    "कोई चोट या नुकसान हुआ? (एक message में बताएं)"
+  ],
+  hl: [
+    "Kya hua? Thoda batao.",
+    "Kab hua? (date aur time agar yaad ho)",
+    "Kisne kiya? (sirf rishta batao jaise pati, saas — poora naam zaroori nahi)",
+    "Koi gawah tha?",
+    "Koi chot ya nuksan hua? (ek hi message mein batao)"
   ],
   mr: [
     "काय झालं? थोडक्यात सांगा.",
     "केव्हा झालं? (तारीख आणि वेळ आठवत असेल तर)",
     "कोणी केलं? (फक्त नाते सांगा जसे नवरा, सासू — पूर्ण नाव नको)",
     "कोणी साक्षीदार होते का?",
-    "काही दुखापत किंवा नुकसान झालं का?"
+    "काही दुखापत किंवा नुकसान झालं का? (एकाच message मध्ये सांगा)"
   ]
 };
 
 // Detect language from message
 const detectLang = (msg) => {
-  if (!msg) return 'hi';
+  if (!msg) return 'hl';
   const devanagari = /[\u0900-\u097F]/;
-  if (!devanagari.test(msg)) return 'en';
-  const marathiWords = ['आहे', 'नाही', 'काय', 'केव्हा', 'कुठे', 'मला', 'तुम्ही', 'आपण', 'झालं', 'सांगा'];
-  if (marathiWords.some(w => msg.includes(w))) return 'mr';
-  return 'hi';
+  // If Devanagari script detected
+  if (devanagari.test(msg)) {
+    const marathiWords = ['आहे', 'नाही', 'काय', 'केव्हा', 'कुठे', 'मला', 'तुम्ही', 'आपण', 'झालं', 'सांगा'];
+    if (marathiWords.some(w => msg.includes(w))) return 'mr';
+    return 'hi';
+  }
+  // Hinglish detection — common Hindi words in Roman script
+  const hinglishWords = ['mujhe', 'mere', 'mera', 'meri', 'kya', 'karo', 'chahiye', 'hoon', 'hai', 'tha', 'thi', 'nahi', 'aur', 'bhi', 'yahan', 'wahan', 'pati', 'ghar', 'madad', 'bachao', 'acha', 'theek', 'haan', 'nahi', 'bata', 'kab', 'kaise', 'kyun'];
+  const words = msg.toLowerCase().split(/\s+/);
+  const hinglishCount = words.filter(w => hinglishWords.includes(w)).length;
+  if (hinglishCount >= 1) return 'hl';
+  return 'en';
 };
 
 const handleMessage = async (req, res) => {

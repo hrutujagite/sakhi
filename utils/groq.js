@@ -143,6 +143,29 @@ FIR DRAFT
 अंत में यह जरूर लिखें: "यह draft है। Police station पर दिखाएं और कहें: मुझे FIR दर्ज करनी है।"
 150 शब्दों से कम रखें। कोई नाम न लिखें।`,
 
+    hl: `You are helping a domestic violence survivor draft an FIR complaint in simple Hinglish (Hindi written in English letters).
+Based on these answers, generate a clear FIR draft they can show at a police station.
+
+What happened: ${whatHappened}
+When: ${whenHappened}
+Who (relation only): ${whoDid}
+Witnesses: ${witnesses}
+Injuries/damage: ${injuries}
+
+Format the draft like this:
+---
+FIR DRAFT
+Date: [aaj ki date]
+To: Station House Officer
+
+Main yeh report karna chahti hoon:
+[write the complaint in simple Hinglish based on the answers above]
+
+Kripya uchit karyawahi karein.
+---
+End with: "Yeh draft hai. Police station par dikhayein aur kahein: Mujhe FIR darj karni hai."
+150 words se kam rakho. Koi naam mat likho.`,
+
     mr: `तुम्ही एका घरगुती हिंसा पीडितेची FIR draft तयार करण्यात मदत करत आहात।
 खालील उत्तरांच्या आधारे एक साधी FIR draft तयार करा जी ती police station मध्ये दाखवू शकेल।
 
@@ -192,6 +215,7 @@ FIR DRAFT
     const fallback = {
       en: `Sorry, I could not generate the draft right now.\n\nPlease call: Women Helpline: 181 | Police: 112\nThey will help you file the FIR directly.`,
       hi: `माफ करें, अभी draft नहीं बन पाई।\n\nकृपया call करें: Women Helpline: 181 | Police: 112\nवो सीधे FIR दर्ज करने में मदद करेंगे।`,
+      hl: `Sorry, abhi draft nahi ban payi.\n\nCall karein: Women Helpline: 181 | Police: 112\nWo seedha FIR mein madad karenge.`,
       mr: `माफ करा, आत्ता draft तयार होऊ शकली नाही.\n\nकृपया call करा: Women Helpline: 181 | Police: 112`
     };
     return fallback[lang] || fallback.hi;
