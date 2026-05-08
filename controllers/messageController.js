@@ -1,5 +1,5 @@
 const twilio = require('twilio');
-const { getAIResponse } = require('../utils/groq');
+const { getAIResponse, getFIRDraft } = require('../utils/groq');
 const { formatShelterResponse } = require('../utils/shelterFinder');
 
 // In-memory session store
@@ -9,6 +9,47 @@ const sessions = {};
 const extractPincode = (msg) => {
   const match = msg.match(/\b\d{6}\b/);
   return match ? match[0] : null;
+};
+
+// Check if message is FIR trigger
+const isFIRTrigger = (msg) => {
+  const triggers = ['fir', 'complaint', 'police', 'शिकायत', 'तक्रार', 'report', 'दर्ज', 'case'];
+  return triggers.some(t => msg?.toLowerCase().includes(t));
+};
+
+// FIR questions in 3 languages
+const FIR_QUESTIONS = {
+  en: [
+    "What happened? Please describe briefly.",
+    "When did it happen? (date and time if you remember)",
+    "Who did this? (only their relation to you, e.g. husband, in-law — no full names needed)",
+    "Were there any witnesses?",
+    "Were there any injuries or damage?"
+  ],
+  hi: [
+    "क्या हुआ? कृपया संक्षेप में बताएं।",
+    "कब हुआ? (तारीख और समय अगर याद हो)",
+    "किसने किया? (सिर्फ रिश्ता बताएं जैसे पति, सास — पूरा नाम जरूरी नहीं)",
+    "कोई गवाह था?",
+    "कोई चोट या नुकसान हुआ?"
+  ],
+  mr: [
+    "काय झालं? थोडक्यात सांगा.",
+    "केव्हा झालं? (तारीख आणि वेळ आठवत असेल तर)",
+    "कोणी केलं? (फक्त नाते सांगा जसे नवरा, सासू — पूर्ण नाव नको)",
+    "कोणी साक्षीदार होते का?",
+    "काही दुखापत किंवा नुकसान झालं का?"
+  ]
+};
+
+// Detect language from message
+const detectLang = (msg) => {
+  if (!msg) return 'hi';
+  const devanagari = /[\u0900-\u097F]/;
+  if (!devanagari.test(msg)) return 'en';
+  const marathiWords = ['आहे', 'नाही', 'काय', 'केव्हा', 'कुठे', 'मला', 'तुम्ही', 'आपण', 'झालं', 'सांगा'];
+  if (marathiWords.some(w => msg.includes(w))) return 'mr';
+  return 'hi';
 };
 
 const handleMessage = async (req, res) => {
@@ -21,16 +62,24 @@ const handleMessage = async (req, res) => {
   if (!sessions[sender]) {
     sessions[sender] = {
       state: 'INIT',
-      history: []        // ← conversation memory
+      history: [],
+      lang: 'hi',
+      firAnswers: [],
+      firStep: 0
     };
   }
 
   const session = sessions[sender];
   let responseText = '';
 
+  // Detect and store language
+  if (incomingMsg && session.state !== 'FIR') {
+    session.lang = detectLang(incomingMsg);
+  }
+
   // ── DISGUISE MODE trigger ────────────────────────────────────────────
   if (incomingMsg?.toLowerCase() === 'erase') {
-    sessions[sender] = { state: 'DISGUISE', history: [] };
+    sessions[sender] = { state: 'DISGUISE', history: [], lang: session.lang, firAnswers: [], firStep: 0 };
     responseText = `🍳 Welcome to Ruchika's Kitchen!
 
 Today's recipe: Aloo Paratha
@@ -46,14 +95,14 @@ Type any vegetable name for its recipe! 🌿`;
     responseText = await getDisguiseResponse(incomingMsg);
   }
 
-  // ── PINCODE detected — find shelters ────────────────────────────────
-  else if (extractPincode(incomingMsg)) {
+  // ── PINCODE detected — find shelters (not during FIR flow) ──────────
+  else if (extractPincode(incomingMsg) && session.state !== 'FIR') {
     const pincode = extractPincode(incomingMsg);
     responseText = formatShelterResponse(pincode);
   }
 
-  // ── TRIGGER WORDS — first contact ───────────────────────────────────
-  else if (['help', 'madad', 'bachao', 'helpme', 'help me', 'मदद', 'बचाओ', 'मदत'].includes(incomingMsg?.toLowerCase())) {
+  // ── TRIGGER WORDS — first contact or re-trigger ─────────────────────
+  else if (['help', 'madad', 'bachao', 'helpme', 'help me', 'मदद', 'बचाओ', 'मदत', 'danger'].includes(incomingMsg?.toLowerCase())) {
     sessions[sender].state = 'TRIAGE';
     responseText = `Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.
 
@@ -91,6 +140,40 @@ Main aapki madad kar sakti hoon:
 4️⃣ Bas baat karna
 
 Aapko kya chahiye?`;
+    }
+  }
+
+  // ── FIR TRIGGER — only in SUPPORT mode ──────────────────────────────
+  else if (session.state === 'SUPPORT' && (incomingMsg === '3' || isFIRTrigger(incomingMsg))) {
+    session.state = 'FIR';
+    session.firAnswers = [];
+    session.firStep = 0;
+
+    const questions = FIR_QUESTIONS[session.lang] || FIR_QUESTIONS.hi;
+    responseText = `Main aapki FIR taiyaar karne mein madad karungi 🌸
+
+Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.
+
+*Sawaal 1:*
+${questions[0]}`;
+  }
+
+  // ── FIR FLOW — collecting answers one by one ─────────────────────────
+  else if (session.state === 'FIR') {
+    const questions = FIR_QUESTIONS[session.lang] || FIR_QUESTIONS.hi;
+
+    // Save current answer
+    session.firAnswers.push(incomingMsg);
+    session.firStep = session.firAnswers.length;
+
+    if (session.firStep < questions.length) {
+      // Ask next question
+      responseText = `*Sawaal ${session.firStep + 1}:*
+${questions[session.firStep]}`;
+    } else {
+      // All 5 answers collected — generate FIR draft
+      session.state = 'SUPPORT';
+      responseText = await getFIRDraft(session.firAnswers, session.lang);
     }
   }
 
