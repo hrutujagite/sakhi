@@ -1,82 +1,338 @@
 [
   {
-    "name": "One Stop Centre - Pune",
-    "address": "Sassoon General Hospital Campus, Pune",
-    "pincode": "411001",
-    "phone": "18002330505",
-    "district": "Pune",
+    "name": "One Stop Centre - Ahmadnagar",
+    "address": "Dilasa Sakhi One Stop Center,Near Top up Petrol pump Ahamadnager-414001",
+    "pincode": "414001",
+    "phone": "0241-2550289",
+    "district": "Ahmadnagar",
     "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Mumbai",
-    "address": "Sion Hospital Campus, Mumbai",
-    "pincode": "400022",
-    "phone": "18002330505",
-    "district": "Mumbai",
+    "name": "One Stop Centre - Akola",
+    "address": "One Stop Centre, Durga Chowk near Mount Carmel School Akola-444001",
+    "pincode": "444001",
+    "phone": "0724-2428549",
+    "district": "Akola",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Amravati",
+    "address": "One Stop Centre, District Women Hospital, Shrikrushna Peth,Amravati. Amravati District, Maharashtra- 444606",
+    "pincode": "444606",
+    "phone": "0721-2660382",
+    "district": "Amravati",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Aurangabad",
+    "address": "One Stop Centre, Municipal Corporation Hospital, Aurangabad District, Maharashtra",
+    "pincode": "not found",
+    "phone": "9404950079",
+    "district": "Aurangabad",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Beed",
+    "address": "B & C Quarters, Chandmari Colony Dhanora Road Beed- 431122",
+    "pincode": "431122",
+    "phone": "02442-230493",
+    "district": "Beed",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Bhandara",
+    "address": "One Stop Centre, C/o, Civil Hospital, Bhandara-441904",
+    "pincode": "441904",
+    "phone": "07184-253400",
+    "district": "Bhandara",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Buldhana",
+    "address": "District civil surgeon, Civil Hospital premises, Buldhana- 443001",
+    "pincode": "443001",
+    "phone": "07262-244686",
+    "district": "Buldhana",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Chandrapur",
+    "address": "Run by Saraswati Shikshan Mahila Mandal, Mahatma Jyotiba Fule SadanKrishna Nagar Chowk, Mul Road, Chandrapur-442605",
+    "pincode": "442605",
+    "phone": "07172-274349",
+    "district": "Chandrapur",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Dhule",
+    "address": "Sakhi One Stop Centre Gov. Mamta Mahila Vastigruha, 28 Jay Hind Colony Opp. Jayhind High School and JR. College, Deopur , Dhule-",
+    "pincode": "not found",
+    "phone": "0257-2251748",
+    "district": "Dhule",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Gadchiroli",
+    "address": "One Stop Centre, Quarter No.46.47, Collector Colony, Sonapur Complex-442605",
+    "pincode": "442605",
+    "phone": "07132-222645",
+    "district": "Gadchiroli",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Gondia",
+    "address": "One Stop Centre, C/o. JJB & CWC Building, Near Shivaji Smarak, Old Police Head Quarter, Manohar Chowk, Gondia Dist. Gondia (Maharashtra)-441601",
+    "pincode": "441601",
+    "phone": "07182-251468",
+    "district": "Gondia",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Hingoli",
+    "address": "Shaskiya Vasahat T-1-1/1 & T- 1-1/2 Opp.SBI Bank Akola Road, Hingoli",
+    "pincode": "not found",
+    "phone": "8421036985",
+    "district": "Hingoli",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Jalgaon",
+    "address": "Sakhi One Stop Center Govt. Ashadeep Women Hostel, Plot No-6, Vijay colony in front of Ashok",
+    "pincode": "not found",
+    "phone": "0257-2251748",
+    "district": "Jalgaon",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Jalna",
+    "address": "Mahila Rajya Gruha, Dr.Misal building, near Shani Temple, Old Jalna",
+    "pincode": "not found",
+    "phone": "9422183008",
+    "district": "Jalna",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Kolhapur",
+    "address": "Government Tejaswini Mahila Vastigruh, 857-E- Ulape Building, Randive Col. Kadamwadi Road, Kolhapur-",
+    "pincode": "not found",
+    "phone": "0231-2604046",
+    "district": "Kolhapur",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Latur",
+    "address": "One Stop Centre Latur, Plot No R2/239, Netaji Nagar, Near Kalge Hospital Latur, Dist. Maharashtra-413512",
+    "pincode": "413512",
+    "phone": "9284275480",
+    "district": "Latur",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Mumbai City",
+    "address": "One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012",
+    "pincode": "400012",
+    "phone": "9653660408",
+    "district": "Mumbai City",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Mumbai Suburban",
+    "address": "Female Beggers Home, 1st Fl.R.C. Marg, Opp. Jain Mandir, Chembur(E), Mumbai-400071",
+    "pincode": "400071",
+    "phone": "9702962025",
+    "district": "Mumbai Suburban",
     "state": "Maharashtra"
   },
   {
     "name": "One Stop Centre - Nagpur",
-    "address": "Mayo Hospital Campus, Nagpur",
-    "pincode": "440003",
-    "phone": "18002330505",
+    "address": "One Stop Centre, Bharosa Centre, Nagpur, Nagpur District, Maharashtra",
+    "pincode": "not found",
+    "phone": "9823711080",
     "district": "Nagpur",
     "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Delhi",
-    "address": "Safdarjung Hospital Campus, New Delhi",
-    "pincode": "110029",
-    "phone": "18002330505",
-    "district": "New Delhi",
-    "state": "Delhi"
+    "name": "One Stop Centre - Nanded",
+    "address": "One Stop Centre, Ravidas Niwas, H.No.1/12/849, Shastri Nagar, Near Bhagyanagar,Nanded- 431605,",
+    "pincode": "431605",
+    "phone": "7038064090",
+    "district": "Nanded",
+    "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Bengaluru",
-    "address": "Victoria Hospital Campus, Bengaluru",
-    "pincode": "560002",
-    "phone": "18002330505",
-    "district": "Bengaluru",
-    "state": "Karnataka"
+    "name": "One Stop Centre - Nandurbar",
+    "address": "One Stop Center, Civil Hospital Area, Sakri Road- 425412",
+    "pincode": "425412",
+    "phone": "02564-210047",
+    "district": "Nandurbar",
+    "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Chennai",
-    "address": "Rajiv Gandhi Govt. General Hospital, Chennai",
-    "pincode": "600003",
-    "phone": "18002330505",
-    "district": "Chennai",
-    "state": "Tamil Nadu"
+    "name": "One Stop Centre - Nasik",
+    "address": "Sakhi One Stop Center Government Vatsalya Women Shelter Home, Near Ashok Stambh, Gangapur Road, Nashik-422001",
+    "pincode": "422001",
+    "phone": "022-22814906",
+    "district": "Nasik",
+    "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Hyderabad",
-    "address": "Osmania General Hospital Campus, Hyderabad",
-    "pincode": "500012",
-    "phone": "18002330505",
-    "district": "Hyderabad",
-    "state": "Telangana"
+    "name": "One Stop Centre - Osmanabad",
+    "address": "Sakhi One Stop Center, 1st Floor, Civil Hospital, Osmanabad-413501",
+    "pincode": "413501",
+    "phone": "02472-222592",
+    "district": "Osmanabad",
+    "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Kolkata",
-    "address": "SSKM Hospital Campus, Kolkata",
-    "pincode": "700020",
-    "phone": "18002330505",
-    "district": "Kolkata",
-    "state": "West Bengal"
+    "name": "One Stop Centre - Palghar",
+    "address": "District women and child development officer, Near Aryan Ground Vishnu Nagar Road, Lokmanya Pada, Palghar",
+    "pincode": "not found",
+    "phone": "2525257622",
+    "district": "Palghar",
+    "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Jaipur",
-    "address": "SMS Hospital Campus, Jaipur",
-    "pincode": "302004",
-    "phone": "18002330505",
-    "district": "Jaipur",
-    "state": "Rajasthan"
+    "name": "One Stop Centre - Parbhani",
+    "address": "Govt. Civil Hospital, Subhash Road, Parbhani Pin.- 431401",
+    "pincode": "431401",
+    "phone": "9511886844",
+    "district": "Parbhani",
+    "state": "Maharashtra"
   },
   {
-    "name": "One Stop Centre - Ahmedabad",
-    "address": "Civil Hospital Campus, Ahmedabad",
-    "pincode": "380016",
-    "phone": "18002330505",
-    "district": "Ahmedabad",
-    "state": "Gujarat"
+    "name": "One Stop Centre - Pune -1",
+    "address": "Sakhi One Stop Centre, 2nd floor, Dalvi Hospital, Near Shivaji Nagar, S.T. Stand,",
+    "pincode": "not found",
+    "phone": "022-22814906",
+    "district": "Pune -1",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Pune-2",
+    "address": "Sakhi One Stop Centre, 1st floor, Rajiv Gandhi Hospital, Yerawada, Pune-411006",
+    "pincode": "411006",
+    "phone": "7387934588",
+    "district": "Pune-2",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Raigarh",
+    "address": "Nirbhaya Sakhi Center(OSC) Old Blood Bank in the premises of District General Hospital Alibaug, Tal. Alibaug, Dist. Raigad-402201",
+    "pincode": "402201",
+    "phone": "02141-228560",
+    "district": "Raigarh",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Ratnagiri",
+    "address": "Civil Hospital Ratnagiri- 415612",
+    "pincode": "415612",
+    "phone": "02352-220461",
+    "district": "Ratnagiri",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Sangli",
+    "address": "Sakhi one stop centre Sangli, Bhagini Nivedita pratishthan Vijaydurg, Rajwada Chowk, Sangli-416416",
+    "pincode": "416416",
+    "phone": "9403782309",
+    "district": "Sangli",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Satara",
+    "address": "One Stop Centre, Government Men’s Beggar Home, Satara District, Maharashtra",
+    "pincode": "not found",
+    "phone": "02141-228560",
+    "district": "Satara",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Sindhudurg",
+    "address": "District Civil surgeon Hospital, Sindhudurg, Pin Code-416812",
+    "pincode": "416812",
+    "phone": "9921756172",
+    "district": "Sindhudurg",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Solapur",
+    "address": "One Stop Centre, Maji Sainik Nagar, Vijapur Road, Solapur-413004",
+    "pincode": "413004",
+    "phone": "9822402860",
+    "district": "Solapur",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Thane",
+    "address": "Chatrapati Shivaji Maharaj Hospital Kalwa (W),Thane- 400605",
+    "pincode": "400605",
+    "phone": "7977386300",
+    "district": "Thane",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Wardha",
+    "address": "Civil Hospital, Sewagram Road, Wardha- 442001",
+    "pincode": "442001",
+    "phone": "07152-242281",
+    "district": "Wardha",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Washim",
+    "address": "Secura Hospital Malegaon Road, Washim-444505",
+    "pincode": "444505",
+    "phone": "07252-234280",
+    "district": "Washim",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Yavatmal",
+    "address": "Vasantrao Naik Shaskiya Mahavidyalaya, Vaidyakiya Mahavidyalaya Ward No.3 Yawantmal.",
+    "pincode": "not found",
+    "phone": "7972910488",
+    "district": "Yavatmal",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Mumbai Suburban-II",
+    "address": "10 th floor, HBT Hospitral, jogeshwari (E) Mumbai-60",
+    "pincode": "not found",
+    "phone": "7045394766",
+    "district": "Mumbai Suburban-II",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Aurangabad-II",
+    "address": "Neharu Nagar Hospital,Katkat Gate, Aurangabad",
+    "pincode": "not found",
+    "phone": "8530360181",
+    "district": "Aurangabad-II",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Nashik-II",
+    "address": "Observation Home, Mochi Corner, Malegaon Camp Malegoan Tal. Malegaon Dist. Nashik",
+    "pincode": "not found",
+    "phone": "9561299019",
+    "district": "Nashik-II",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Nagpur-II",
+    "address": "one stop center 2,Near Govt. Karuna mahila vastigruh premises,patankar chowk,Nari Road,Nagpur",
+    "pincode": "not found",
+    "phone": "7057933667",
+    "district": "Nagpur-II",
+    "state": "Maharashtra"
+  },
+  {
+    "name": "One Stop Centre - Thane-II",
+    "address": "15- A Ground floor Chatrapati Shivaji Maharaj Hospital kalva District Thane West -400605",
+    "pincode": "400605",
+    "phone": "9595954172",
+    "district": "Thane-II",
+    "state": "Maharashtra"
   }
 ]
