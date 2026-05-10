@@ -51,13 +51,25 @@ IMPORTANT:
 - You are a FIRST STEP — a bridge to real help
 - Always end crisis responses with helpline numbers`;
 
+// Maps session lang code → a hard, unambiguous language instruction for the model
+const LANG_OVERRIDE = {
+  hl: 'STRICT RULE: The user is writing in Hinglish (Hindi words spelled in English letters). You MUST reply ONLY in Hinglish — Hindi words written in English letters. Do NOT use Devanagari script at all. Example style: "Main yahan hoon. Tum akeli nahi ho."',
+  hi: 'STRICT RULE: The user is writing in Hindi (Devanagari). You MUST reply ONLY in Hindi using Devanagari script. Do NOT use English or Roman letters.',
+  mr: 'STRICT RULE: The user is writing in Marathi (Devanagari). You MUST reply ONLY in Marathi using Devanagari script. Do NOT use English or Roman letters.',
+  en: 'STRICT RULE: The user is writing in English. You MUST reply ONLY in English.',
+};
+
 const getAIResponse = async (userMessage, session) => {
   try {
     const history = session.history || [];
+    const lang = session.lang || 'hl';
+    const langOverride = LANG_OVERRIDE[lang] || LANG_OVERRIDE.hl;
 
     const messages = [
       { role: 'system', content: SYSTEM_PROMPT },
       ...history,
+      // Inject language override right before the user message so model cannot ignore it
+      { role: 'system', content: langOverride },
       { role: 'user', content: userMessage }
     ];
 
