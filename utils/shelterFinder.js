@@ -1,13 +1,15 @@
 const shelters = require('../data/shelters.json');
 
 const findSheltersByPincode = (pincode) => {
+  if (!pincode) return [];
+
   // First try exact pincode match
   let results = shelters.filter(s => s.pincode === pincode);
 
-  // If no exact match, try same state by first 2 digits of pincode
-  if (results.length === 0) {
-    const pincodePrefix = pincode.substring(0, 2);
-    results = shelters.filter(s => s.pincode.substring(0, 2) === pincodePrefix);
+  // If no exact match, gradually check from 5 digits down to 2 digits to find the closest region
+  for (let len = 5; len >= 2 && results.length === 0; len--) {
+    const prefix = pincode.substring(0, len);
+    results = shelters.filter(s => s.pincode.startsWith(prefix));
   }
 
   // If still nothing, return first 3 shelters as fallback
@@ -26,7 +28,7 @@ const formatShelterResponse = (pincode) => {
 
   results.forEach((shelter, index) => {
     response += `${index + 1}. *${shelter.name}*\n`;
-    response += `   📍 ${shelter.address}\n`;
+    response += `   📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
     response += `   📞 ${shelter.phone}\n\n`;
   });
 

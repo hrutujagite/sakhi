@@ -224,16 +224,18 @@ const startCheckInTimers = (sender) => {
   const t3 = setTimeout(async () => {
     const s = sessions[sender];
     if (!s || s.state !== 'EMERGENCY') return;
-    const contact = s.trustedContact;
-    if (contact?.phone && !s.reAlerted) {
+    const contacts = s.trustedContacts || [];
+    if (contacts.length > 0 && !s.reAlerted) {
       s.reAlerted = true;
-      await sendMsg(
-        `whatsapp:${contact.phone}`,
-        `⚠️ URGENT: ${contact.name || 'A woman you know'} has not confirmed she is safe.\n\n` +
-        `Please try reaching her immediately.\n` +
-        `If she does not respond, please call 112.\n\n` +
-        `— Sakhi Safety App`
-      );
+      for (const contact of contacts) {
+        await sendMsg(
+          `whatsapp:${contact}`,
+          `⚠️ URGENT: A woman you know has not confirmed she is safe.\n\n` +
+          `Please try reaching her immediately.\n` +
+          `If she does not respond, please call 112.\n\n` +
+          `— Sakhi Safety App`
+        ).catch(err => console.error(err.message));
+      }
     }
   }, 45 * 60 * 1000);
 
@@ -292,7 +294,7 @@ const buildEmergencyMsg = (session, locationLink) => {
   const shelter = session.emergencyShelter;
   if (shelter) {
     const mapsLink = getMapsLink(shelter);
-    msg += `${t('shelterLabel', lang)}\n${shelter.name}\n📍 ${shelter.address}\n📞 ${shelter.phone}\n🗺️ ${mapsLink}\n\n`;
+    msg += `${t('shelterLabel', lang)}\n🏠 ${shelter.name}\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n📞 ${shelter.phone}\n🗺️ ${mapsLink}\n\n`;
   } else {
     msg += t('shelterFallback', lang) + '\n\n';
   }
@@ -346,20 +348,20 @@ const activateEmergency = async (sender, session) => {
     console.error('[Emergency] Token error:', e.message);
   }
 
-  // Step 4 — send emergency message (target: within 3 seconds)
+  // Step 4 — return emergency message to be sent instantly
   const msg = buildEmergencyMsg(session, locationLink);
-  await sendMsg(sender, msg);
-
+  
   // Start check-in timers
   startCheckInTimers(sender);
+  return msg;
 };
 
 // ─── QUICK REPLY HANDLERS ─────────────────────────────────────────────────────
 
 const handleAlertContact = async (sender, session) => {
-  const contact = session.trustedContact;
-  if (!contact?.phone) {
-    return 'I could not find your trusted contact. Please call 181 directly — they will help you right now. 🌸';
+  const contacts = session.trustedContacts || [];
+  if (contacts.length === 0) {
+    return 'I could not find your trusted contacts. Please call 181 directly — they will help you right now. 🌸';
   }
 
   let locationText = '';
@@ -376,19 +378,28 @@ const handleAlertContact = async (sender, session) => {
     hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata',
   });
 
-  const contactMsg =
-    `⚠️ URGENT: ${contact.name || 'Someone who trusts you'} needs your help RIGHT NOW.\n\n` +
-    `${locationText}\n\nTime: ${now} IST\n\n` +
-    `Please go to her immediately or call 181 if she does not respond.\n\n` +
-    `— Sakhi Safety App`;
+  let successCount = 0;
+  for (const contact of contacts) {
+    const contactMsg =
+      `⚠️ URGENT: Someone who trusts you needs your help RIGHT NOW.\n\n` +
+      `${locationText}\n\nTime: ${now} IST\n\n` +
+      `Please go to her immediately or call 181 if she does not respond.\n\n` +
+      `— Sakhi Safety App`;
 
-  try {
-    await sendMsg(`whatsapp:${contact.phone}`, contactMsg);
+    try {
+      await sendMsg(`whatsapp:${contact}`, contactMsg);
+      successCount++;
+    } catch (err) {
+      console.error(`[Alert] Failed to send to ${contact}:`, err.message);
+    }
+  }
+
+  if (successCount > 0) {
     session.trustedContactAlerted = true;
     session.contactAlertTime = Date.now();
-    return `✅ Message sent to ${contact.name}.\n\nThey know you need help. You are not alone. 🌸\n\nPolice: 112 | Helpline: 181`;
-  } catch {
-    return `I tried but could not send the alert. Please call ${contact.name} directly or dial 181. You are not alone. 🌸`;
+    return `✅ Alert sent to your contacts.\n\nThey know you need help. You are not alone. 🌸\n\nPolice: 112 | Helpline: 181`;
+  } else {
+    return `I tried but could not send the alerts. Please call them directly or dial 181. You are not alone. 🌸`;
   }
 };
 
@@ -468,4 +479,5 @@ module.exports = {
   handleSafeNow,
   storeLocationInSession,
   FALLBACKS,
+  buildEmergencyMsg,
 };

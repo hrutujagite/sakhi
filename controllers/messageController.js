@@ -14,13 +14,14 @@ const {
   handleSafetySteps,
   handleMoreShelters,
   handleSafeNow,
+  buildEmergencyMsg,
 } = require('../utils/emergencyMode');
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
 const extractPincode = (msg) => {
-  const match = msg.match(/\b\d{6}\b/);
-  return match ? match[0] : null;
+  const match = msg.match(/\b\d{3}\s?\d{3}\b/);
+  return match ? match[0].replace(/\s/g, '') : null;
 };
 
 const isFIRTrigger = (msg) => {
@@ -96,13 +97,14 @@ const handleMessage = async (req, res) => {
       firAnswers: [], firStep: 0,
       messageCount: 0, lastActiveTime: null,
       disguiseKeyword: null,
-      trustedContact: { name: null, phone: null },
+      trustedContacts: [],
+      trustedContactNames: null,
       pincode: null,
       district: null,
       savedArea: null,
       policeAlertPreference: false,
     };
-    return sendTwiML(res, `Namaste! 🌸 I am Sakhi. Before we start, I need to know a few things to keep you safe.\n\nPlease reply with the phone number of someone you trust (like a friend or family member). Start with +91 (e.g. +919876543210).`);
+    return sendTwiML(res, `Namaste! 🌸 I am Sakhi. Before we start, I need to know a few things to keep you safe.\n\nPlease reply with the phone number(s) of people you trust. Start with +91 (e.g. +919876543210). You can send multiple numbers separated by commas.`);
   }
 
   const session = sessions[sender];
@@ -115,12 +117,12 @@ const handleMessage = async (req, res) => {
   // ── ONBOARDING FLOW ──────────────────────────────────────────────────────────
   if (session.state.startsWith('ONBOARDING_')) {
     if (session.state === 'ONBOARDING_CONTACT_PHONE') {
-      session.trustedContact.phone = incomingMsg.replace(/[^0-9+]/g, '');
+      session.trustedContacts = incomingMsg.split(',').map(p => p.replace(/[^0-9+]/g, '')).filter(p => p);
       session.state = 'ONBOARDING_CONTACT_NAME';
-      return sendTwiML(res, `What is their name?`);
+      return sendTwiML(res, `What are their names?`);
     }
     if (session.state === 'ONBOARDING_CONTACT_NAME') {
-      session.trustedContact.name = incomingMsg;
+      session.trustedContactNames = incomingMsg;
       session.state = 'ONBOARDING_DISGUISE_KEY';
       return sendTwiML(res, `Got it. Now, choose a secret word. If you type this word anytime, I will immediately hide our chat and act like a cooking bot.`);
     }
@@ -190,11 +192,10 @@ const handleMessage = async (req, res) => {
     } else if (lower === '4' || lower === 'ok' || lower.includes('safe now') || lower.includes('i am safe')) {
       responseText = handleSafeNow(sender, session);
     } else {
-      // Any other message in emergency — re-show options
-      responseText =
-        `I am right here with you. 🌸\n\nReply with:\n` +
-        `1️⃣ Alert my contact\n2️⃣ Safety steps\n3️⃣ More shelters\n4️⃣ I am safe now\n\n` +
-        `Police: 112 | Women Helpline: 181`;
+      // Any other message in emergency — re-show options in user's language
+      const BASE_URL = process.env.BASE_URL || 'https://sakhi.onrender.com';
+      const locationLink = session.locationToken ? `${BASE_URL}/loc/${session.locationToken}` : null;
+      responseText = buildEmergencyMsg(session, locationLink);
     }
     return sendTwiML(res, responseText);
   }
@@ -206,8 +207,8 @@ const handleMessage = async (req, res) => {
 
     if (yesMatch) {
       clearConfirmTimers(sender);
-      await activateEmergency(sender, session);
-      return sendTwiML(res, ''); // message already sent by activateEmergency
+      responseText = await activateEmergency(sender, session);
+      return sendTwiML(res, responseText);
     } else if (noMatch) {
       clearConfirmTimers(sender);
       session.state = 'SUPPORT';
