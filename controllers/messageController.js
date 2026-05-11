@@ -91,6 +91,12 @@ const handleMessage = async (req, res) => {
 
   console.log(`[${new Date().toISOString()}] From ${sender}: ${incomingMsg}`);
 
+  // Hidden developer command to wipe the session and start from scratch
+  if (incomingMsg && incomingMsg.trim().toUpperCase() === 'RESET SESSION') {
+    delete sessions[sender];
+    return sendTwiML(res, '⚙️ Developer: Session wiped. Send "hi" to restart onboarding.');
+  }
+
   if (!sessions[sender]) {
     sessions[sender] = {
       state: 'ONBOARDING_CONTACT_PHONE', history: [], lang: 'hl',
@@ -193,7 +199,7 @@ const handleMessage = async (req, res) => {
       responseText = handleSafeNow(sender, session);
     } else {
       // Any other message in emergency — re-show options in user's language
-      const BASE_URL = process.env.BASE_URL || 'https://sakhi.onrender.com';
+      const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
       const locationLink = session.locationToken ? `${BASE_URL}/loc/${session.locationToken}` : null;
       responseText = buildEmergencyMsg(session, locationLink);
     }

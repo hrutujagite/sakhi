@@ -13,7 +13,7 @@ const FALLBACKS = {
   emergency: '112',
 };
 
-const BASE_URL = process.env.BASE_URL || 'https://sakhi.onrender.com';
+const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
 
 // ─── DISTRESS KEYWORDS ────────────────────────────────────────────────────────
 
