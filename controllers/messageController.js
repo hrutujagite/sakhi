@@ -1,6 +1,7 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
-const { formatShelterResponse } = require('../utils/shelterFinder');
+const { formatShelterResponse, getBestShelter, findByDistrict, findByState } = require('../utils/shelterFinder');
+const { generateToken } = require('../utils/locationToken');
 const sessions = require('../utils/sessions');
 const {
   isDistress,
@@ -284,6 +285,63 @@ const handleMessage = async (req, res) => {
     return sendTwiML(res, responseText);
   }
 
+  // ── MENU OPTION 2: FIND SHELTER ────────────────────────────────────────────────
+  if (session.state === 'SUPPORT' && (incomingMsg === '2' || lower.includes('shelter'))) {
+    session.state = 'SUPPORT_SHELTER_MENU';
+    responseText = withHelpFooter(
+      `📍 For the most accurate nearby support centres, you can securely share your live location.\n\nReply:\n1️⃣ Share Live Location\n2️⃣ Enter District/Area Manually`
+    );
+    return sendTwiML(res, responseText);
+  }
+
+  // ── SHELTER MENU HANDLING ─────────────────────────────────────────────────────
+  if (session.state === 'SUPPORT_SHELTER_MENU') {
+    if (incomingMsg === '1') {
+      session.state = 'SUPPORT_SHELTER_LOC';
+      const token = generateToken(sender, 'support');
+      const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
+      responseText = withHelpFooter(
+        `To improve nearby support recommendations, tap below:\n\n${BASE_URL}/loc/${token}`
+      );
+      return sendTwiML(res, responseText);
+    } else if (incomingMsg === '2') {
+      session.state = 'SUPPORT_SHELTER_DISTRICT';
+      responseText = withHelpFooter(`Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)`);
+      return sendTwiML(res, responseText);
+    } else {
+      responseText = withHelpFooter(`Please reply with 1 or 2.`);
+      return sendTwiML(res, responseText);
+    }
+  }
+
+  // ── SHELTER DISTRICT HANDLING ─────────────────────────────────────────────────
+  if (session.state === 'SUPPORT_SHELTER_DISTRICT') {
+    session.district = incomingMsg;
+    // Assume state is Maharashtra for now since all current data is MH
+    session.geoState = 'Maharashtra'; 
+    const shelter = getBestShelter(session);
+    
+    // Reset state
+    session.state = 'SUPPORT';
+    
+    let msg = '';
+    if (shelter && !shelter.isFallback) {
+      msg = `Nearest Support Centre:\n\n📍 *${shelter.name}*\n📞 ${shelter.phone}\n\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
+    } else {
+      msg = `We couldn't find a support centre for ${incomingMsg}.\n\nPlease call Women Helpline: 181`;
+    }
+    
+    responseText = withHelpFooter(msg);
+    return sendTwiML(res, responseText);
+  }
+
+  // ── MENU OPTIONS 1 & 4 TRANSLATION ───────────────────────────────────────────
+  let promptForAI = incomingMsg;
+  if (session.state === 'SUPPORT') {
+      if (incomingMsg === '1') promptForAI = "What are my legal rights regarding domestic violence?";
+      if (incomingMsg === '4') promptForAI = "I just want to talk. Please comfort me.";
+  }
+
   // ── FIR TRIGGER ────────────────────────────────────────────────────────────────
   if (session.state === 'SUPPORT' && (incomingMsg === '3' || isFIRTrigger(incomingMsg))) {
     session.state = 'FIR';
@@ -310,7 +368,7 @@ const handleMessage = async (req, res) => {
   }
 
   // ── SUPPORT / EMERGENCY / DEFAULT — AI response ────────────────────────────────
-  const aiReply = await getAIResponse(incomingMsg, session);
+  const aiReply = await getAIResponse(promptForAI, session);
   responseText = withHelpFooter(aiReply);
   return sendTwiML(res, responseText);
 };

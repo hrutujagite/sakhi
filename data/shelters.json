@@ -5,7 +5,9 @@
     "pincode": "414001",
     "phone": "0241-2550289",
     "district": "Ahmadnagar",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.074352,
+    "lng": 74.7219979
   },
   {
     "name": "One Stop Centre - Akola",
@@ -13,7 +15,9 @@
     "pincode": "444001",
     "phone": "0724-2428549",
     "district": "Akola",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.7618122,
+    "lng": 77.1921157
   },
   {
     "name": "One Stop Centre - Amravati",
@@ -21,7 +25,9 @@
     "pincode": "444606",
     "phone": "0721-2660382",
     "district": "Amravati",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.1545412,
+    "lng": 77.6442962
   },
   {
     "name": "One Stop Centre - Aurangabad",
@@ -29,7 +35,9 @@
     "pincode": "431101",
     "phone": "9404950079",
     "district": "Aurangabad",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.877263,
+    "lng": 75.3390241
   },
   {
     "name": "One Stop Centre - Beed",
@@ -37,7 +45,9 @@
     "pincode": "431122",
     "phone": "02442-230493",
     "district": "Beed",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 18.9918442,
+    "lng": 75.909784
   },
   {
     "name": "One Stop Centre - Bhandara",
@@ -45,7 +55,9 @@
     "pincode": "441904",
     "phone": "07184-253400",
     "district": "Bhandara",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.1225869,
+    "lng": 79.794509
   },
   {
     "name": "One Stop Centre - Buldhana",
@@ -53,7 +65,9 @@
     "pincode": "443001",
     "phone": "07262-244686",
     "district": "Buldhana",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.562845,
+    "lng": 76.4086986
   },
   {
     "name": "One Stop Centre - Chandrapur",
@@ -61,7 +75,9 @@
     "pincode": "442605",
     "phone": "07172-274349",
     "district": "Chandrapur",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.0967555,
+    "lng": 79.5045475
   },
   {
     "name": "One Stop Centre - Dhule",
@@ -69,7 +85,9 @@
     "pincode": "424002",
     "phone": "0257-2251748",
     "district": "Dhule",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.1305215,
+    "lng": 74.4900614
   },
   {
     "name": "One Stop Centre - Gadchiroli",
@@ -77,7 +95,9 @@
     "pincode": "442605",
     "phone": "07132-222645",
     "district": "Gadchiroli",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.7590704,
+    "lng": 80.1622807
   },
   {
     "name": "One Stop Centre - Gondia",
@@ -85,7 +105,9 @@
     "pincode": "441601",
     "phone": "07182-251468",
     "district": "Gondia",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.455228,
+    "lng": 80.1962729
   },
   {
     "name": "One Stop Centre - Hingoli",
@@ -93,7 +115,9 @@
     "pincode": "431512",
     "phone": "8421036985",
     "district": "Hingoli",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.5431163,
+    "lng": 77.1739432
   },
   {
     "name": "One Stop Centre - Jalgaon",
@@ -101,7 +125,9 @@
     "pincode": "425001",
     "phone": "0257-2251748",
     "district": "Jalgaon",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.8428827,
+    "lng": 75.5261246
   },
   {
     "name": "One Stop Centre - Jalna",
@@ -109,7 +135,9 @@
     "pincode": "431203",
     "phone": "9422183008",
     "district": "Jalna",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.918833,
+    "lng": 75.8708599
   },
   {
     "name": "One Stop Centre - Kolhapur",
@@ -117,7 +145,9 @@
     "pincode": "416203",
     "phone": "0231-2604046",
     "district": "Kolhapur",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 16.7028412,
+    "lng": 74.2405329
   },
   {
     "name": "One Stop Centre - Latur",
@@ -125,7 +155,9 @@
     "pincode": "413512",
     "phone": "9284275480",
     "district": "Latur",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 18.3553347,
+    "lng": 76.7548997
   },
   {
     "name": "One Stop Centre - Mumbai City",
@@ -133,7 +165,9 @@
     "pincode": "400012",
     "phone": "9653660408",
     "district": "Mumbai City",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.054999,
+    "lng": 72.8692035
   },
   {
     "name": "One Stop Centre - Mumbai Suburban",
@@ -141,7 +175,9 @@
     "pincode": "400071",
     "phone": "9702962025",
     "district": "Mumbai Suburban",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.1309844,
+    "lng": 72.8894618
   },
   {
     "name": "One Stop Centre - Nagpur",
@@ -149,7 +185,9 @@
     "pincode": "443201",
     "phone": "9823711080",
     "district": "Nagpur",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.1498134,
+    "lng": 79.0820556
   },
   {
     "name": "One Stop Centre - Nanded",
@@ -157,7 +195,9 @@
     "pincode": "431605",
     "phone": "7038064090",
     "district": "Nanded",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.0942729,
+    "lng": 77.4832628
   },
   {
     "name": "One Stop Centre - Nandurbar",
@@ -165,7 +205,9 @@
     "pincode": "425412",
     "phone": "02564-210047",
     "district": "Nandurbar",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.5141622,
+    "lng": 74.5405513
   },
   {
     "name": "One Stop Centre - Nasik",
@@ -173,7 +215,9 @@
     "pincode": "422001",
     "phone": "022-22814906",
     "district": "Nasik",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.9480582,
+    "lng": 73.8420837
   },
   {
     "name": "One Stop Centre - Osmanabad",
@@ -181,7 +225,9 @@
     "pincode": "413501",
     "phone": "02472-222592",
     "district": "Osmanabad",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 18.2822454,
+    "lng": 76.0588166
   },
   {
     "name": "One Stop Centre - Palghar",
@@ -189,7 +235,9 @@
     "pincode": "401404",
     "phone": "2525257622",
     "district": "Palghar",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.757249,
+    "lng": 73.0931199
   },
   {
     "name": "One Stop Centre - Parbhani",
@@ -197,7 +245,9 @@
     "pincode": "431401",
     "phone": "9511886844",
     "district": "Parbhani",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.2901981,
+    "lng": 76.6026443
   },
   {
     "name": "One Stop Centre - Pune -1",
@@ -205,7 +255,9 @@
     "pincode": "411035",
     "phone": "022-22814906",
     "district": "Pune -1",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 18.5491881,
+    "lng": 73.8923574
   },
   {
     "name": "One Stop Centre - Pune-2",
@@ -213,7 +265,9 @@
     "pincode": "411006",
     "phone": "7387934588",
     "district": "Pune-2",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 18.5595753,
+    "lng": 73.9242598
   },
   {
     "name": "One Stop Centre - Raigarh",
@@ -221,7 +275,9 @@
     "pincode": "402201",
     "phone": "02141-228560",
     "district": "Raigarh",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.0342426,
+    "lng": 73.0627866
   },
   {
     "name": "One Stop Centre - Ratnagiri",
@@ -229,7 +285,9 @@
     "pincode": "415612",
     "phone": "02352-220461",
     "district": "Ratnagiri",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 16.955022,
+    "lng": 73.428444
   },
   {
     "name": "One Stop Centre - Sangli",
@@ -237,7 +295,9 @@
     "pincode": "416416",
     "phone": "9403782309",
     "district": "Sangli",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 17.1726928,
+    "lng": 74.5867654
   },
   {
     "name": "One Stop Centre - Satara",
@@ -245,7 +305,9 @@
     "pincode": "415001",
     "phone": "02141-228560",
     "district": "Satara",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 17.6361289,
+    "lng": 74.2982781
   },
   {
     "name": "One Stop Centre - Sindhudurg",
@@ -253,7 +315,9 @@
     "pincode": "416812",
     "phone": "9921756172",
     "district": "Sindhudurg",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 16.1357193,
+    "lng": 73.6522086
   },
   {
     "name": "One Stop Centre - Solapur",
@@ -261,7 +325,9 @@
     "pincode": "413004",
     "phone": "9822402860",
     "district": "Solapur",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 17.8499067,
+    "lng": 75.2763203
   },
   {
     "name": "One Stop Centre - Thane",
@@ -269,7 +335,9 @@
     "pincode": "400605",
     "phone": "7977386300",
     "district": "Thane",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.3653598,
+    "lng": 73.3685437
   },
   {
     "name": "One Stop Centre - Wardha",
@@ -277,7 +345,9 @@
     "pincode": "442001",
     "phone": "07152-242281",
     "district": "Wardha",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.8256231,
+    "lng": 78.6131455
   },
   {
     "name": "One Stop Centre - Washim",
@@ -285,7 +355,9 @@
     "pincode": "444505",
     "phone": "07252-234280",
     "district": "Washim",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.2874178,
+    "lng": 77.2369655
   },
   {
     "name": "One Stop Centre - Yavatmal",
@@ -293,7 +365,9 @@
     "pincode": "431003",
     "phone": "7972910488",
     "district": "Yavatmal",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.0638677,
+    "lng": 78.3565663
   },
   {
     "name": "One Stop Centre - Mumbai Suburban-II",
@@ -301,7 +375,9 @@
     "pincode": "400060",
     "phone": "7045394766",
     "district": "Mumbai Suburban-II",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.0559967,
+    "lng": 72.9226654
   },
   {
     "name": "One Stop Centre - Aurangabad-II",
@@ -309,7 +385,9 @@
     "pincode": "431001",
     "phone": "8530360181",
     "district": "Aurangabad-II",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.877263,
+    "lng": 75.3390241
   },
   {
     "name": "One Stop Centre - Nashik-II",
@@ -317,7 +395,9 @@
     "pincode": "423105",
     "phone": "9561299019",
     "district": "Nashik-II",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 20.0112475,
+    "lng": 73.7902364
   },
   {
     "name": "One Stop Centre - Nagpur-II",
@@ -325,7 +405,9 @@
     "pincode": "440026",
     "phone": "7057933667",
     "district": "Nagpur-II",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 21.1498134,
+    "lng": 79.0820556
   },
   {
     "name": "One Stop Centre - Thane-II",
@@ -333,6 +415,8 @@
     "pincode": "400605",
     "phone": "9595954172",
     "district": "Thane-II",
-    "state": "Maharashtra"
+    "state": "Maharashtra",
+    "lat": 19.1943294,
+    "lng": 72.9701779
   }
 ]

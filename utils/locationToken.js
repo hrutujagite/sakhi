@@ -3,14 +3,17 @@ const crypto = require('crypto');
 // In-memory store: token -> { sender, expiry, lat, lng, used }
 const tokenStore = new Map();
 
-const TOKEN_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours — covers full emergency window (45-min re-alert + response buffer)
+const EMERGENCY_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+const SUPPORT_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 /** Generate a unique one-time token for a sender. */
-const generateToken = (sender) => {
+const generateToken = (sender, type = 'emergency') => {
   const token = crypto.randomBytes(16).toString('hex');
+  const ttl = type === 'support' ? SUPPORT_TTL_MS : EMERGENCY_TTL_MS;
   tokenStore.set(token, {
     sender,
-    expiry: Date.now() + TOKEN_TTL_MS,
+    type,
+    expiry: Date.now() + ttl,
     lat: null,
     lng: null,
     used: false,
