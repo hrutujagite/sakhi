@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakhi Bot — Test Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a27;
+    --border: #2a2a3d;
+    --text: #e4e4ef;
+    --text-muted: #8888a4;
+    --accent: #c084fc;
+    --accent-glow: rgba(192, 132, 252, 0.15);
+    --pass: #34d399;
+    --pass-bg: rgba(52, 211, 153, 0.08);
+    --fail: #f87171;
+    --fail-bg: rgba(248, 113, 113, 0.08);
+    --sakhi-pink: #f9a8d4;
+    --sakhi-gold: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background: linear-gradient(180deg, rgba(192,132,252,0.08) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--sakhi-pink), var(--accent), var(--sakhi-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .hero p { color: var(--text-muted); font-size: 1.1rem; }
+
+  .meta-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 24px 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 36px;
+    text-align: center;
+    min-width: 160px;
+  }
+
+  .meta-card .value {
+    font-size: 2.4rem;
+    font-weight: 800;
+  }
+
+  .meta-card .label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .meta-card.total .value { color: var(--accent); }
+  .meta-card.pass .value { color: var(--pass); }
+  .meta-card.fail .value { color: var(--fail); }
+  .meta-card.rate .value {
+    background: linear-gradient(135deg, var(--pass), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .progress-bar-container {
+    max-width: 600px;
+    margin: 0 auto 32px;
+    padding: 0 20px;
+  }
+
+  .progress-bar {
+    height: 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--pass), var(--accent));
+    transition: width 1s ease;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 20px 60px; }
+
+  .category-section { margin-bottom: 40px; }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0 12px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 0;
+  }
+
+  .category-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .category-stats {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+  }
+
+  thead th {
+    background: var(--surface2);
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    vertical-align: top;
+  }
+
+  .row-pass { background: var(--pass-bg); }
+  .row-fail { background: var(--fail-bg); }
+
+  .id-cell { font-weight: 700; color: var(--accent); text-align: center; }
+  .name-cell { font-weight: 600; }
+
+  .response-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.82rem;
+  }
+
+  .badge.pass { background: rgba(52,211,153,0.15); color: var(--pass); }
+  .badge.fail { background: rgba(248,113,113,0.15); color: var(--fail); }
+
+  .steps-detail {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .steps-detail ol {
+    padding-left: 18px;
+    margin-top: 6px;
+  }
+
+  .steps-detail li {
+    margin-bottom: 8px;
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
+  }
+
+  .step-label { font-weight: 600; color: var(--accent); }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.82rem; }
+  .error-note { color: var(--fail); font-size: 0.82rem; }
+
+  .footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 1.8rem; }
+    .meta-bar { gap: 16px; }
+    .meta-card { padding: 16px 24px; min-width: 120px; }
+    .meta-card .value { font-size: 1.8rem; }
+    table { font-size: 0.8rem; }
+    tbody td { padding: 10px 8px; }
+  }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1>🌸 Sakhi Bot — Test Report</h1>
+    <p>Automated WhatsApp Bot Testing Suite &middot; 2026-05-09T12:14:25.536Z</p>
+  </div>
+
+  <div class="meta-bar">
+    <div class="meta-card total"><div class="value">30</div><div class="label">Total Tests</div></div>
+    <div class="meta-card pass"><div class="value">30</div><div class="label">Passed</div></div>
+    <div class="meta-card fail"><div class="value">0</div><div class="label">Failed</div></div>
+    <div class="meta-card rate"><div class="value">100.0%</div><div class="label">Pass Rate</div></div>
+  </div>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 100.0%"></div></div>
+  </div>
+
+  <div class="container">
+    
+    <div class="category-section">
+      <div class="category-header">
+        <h2>Help Triggers</h2>
+        <span class="category-stats">6/6 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">1</td>
+        <td class="name-cell">help</td>
+        <td class="expected-cell">Should show Sakhi TRIAGE menu with options 1 and 2</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">2</td>
+        <td class="name-cell">madad</td>
+        <td class="expected-cell">Should show Sakhi TRIAGE menu (Hinglish trigger)</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">3</td>
+        <td class="name-cell">bachao</td>
+        <td class="expected-cell">Should show Sakhi TRIAGE menu (Hinglish trigger)</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">4</td>
+        <td class="name-cell">मदद (Hindi)</td>
+        <td class="expected-cell">Should show Sakhi TRIAGE menu (Hindi trigger)</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: hi</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">5</td>
+        <td class="name-cell">मदत (Marathi)</td>
+        <td class="expected-cell">Should show Sakhi TRIAGE menu (Marathi trigger)</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: hi</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">6</td>
+        <td class="name-cell">danger</td>
+        <td class="expected-cell">Should show Sakhi TRIAGE menu</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+    <div class="category-section">
+      <div class="category-header">
+        <h2>Triage Flow</h2>
+        <span class="category-stats">2/2 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">7</td>
+        <td class="name-cell">help → reply 1 (Emergency)</td>
+        <td class="expected-cell">Should transition to EMERGENCY, show police numbers 112 and 181, ask for pincode</td>
+        <td class="response-cell"><div class="response-box">🚨 Aap akeli nahi hain. Madad aa rahi hai.<br><br>📞 Abhi call karein:<br>- Police: 112<br>- Women Helpline: 181<br><br>🏃 Agar aap safely nikal sakti hain:<br>- Apna phone, ID, paisa lo<br>- Padosi, mandir, ya dukaan jaao<br>- Police ko batao: &quot;Mujhe suraksha chahiye&quot;<br><br>Apna PINCODE bhejein — main aapke paas ka shelter dhundhungi.</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>1</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🚨 Aap akeli nahi hain. Madad aa rahi hai.<br><br>📞 Abhi call karein:<br>- Police: 112<br>- Women Helpline: 181<br><br>🏃 Agar aap safely nikal sakti hain:<br>- Apna phone, ID, paisa lo<br>- Padosi, mandir, ya dukaan jaao<br>- Police ko batao: &quot;Mujhe suraksha chahiye&quot;<br><br>Apna PINCODE bhejein — main aapke paas ka shelter dhundh...</li></ol></div></td>
+        <td class="state-cell"><code>EMERGENCY</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">8</td>
+        <td class="name-cell">help → reply 2 (Support)</td>
+        <td class="expected-cell">Should transition to SUPPORT, show 4 options menu</td>
+        <td class="response-cell"><div class="response-box">Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+    <div class="category-section">
+      <div class="category-header">
+        <h2>FIR Flow</h2>
+        <span class="category-stats">7/7 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">9</td>
+        <td class="name-cell">help → 2 → reply 3 (FIR start)</td>
+        <td class="expected-cell">Should start FIR flow with Sawaal 1</td>
+        <td class="response-cell"><div class="response-box">Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>What happened? Please describe briefly.</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>3</code><br><span class="step-label">Bot [FIR]:</span> Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>What happened? Please describe briefly.</li></ol></div></td>
+        <td class="state-cell"><code>FIR</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">10</td>
+        <td class="name-cell">During FIR → pincode 400001</td>
+        <td class="expected-cell">Should record pincode as FIR answer (NOT trigger shelter search), ask next question</td>
+        <td class="response-cell"><div class="response-box">*Sawaal 2:*<br>When did it happen? (date and time if you remember)</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>3</code><br><span class="step-label">Bot [FIR]:</span> Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>What happened? Please describe briefly.</li><li><span class="step-label">User:</span> <code>400001</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 2:*<br>When did it happen? (date and time if you remember)</li></ol></div></td>
+        <td class="state-cell"><code>FIR</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">11</td>
+        <td class="name-cell">help → 2 → mere pati ne mara (Hinglish FIR)</td>
+        <td class="expected-cell">Should trigger AI response (note: &quot;mere pati ne mara&quot; may NOT trigger FIR flow — no FIR keyword)</td>
+        <td class="response-cell"><div class="response-box">मैं यहाँ हूँ। तुम अकेली नहीं हो। तुम्हारी सुरक्षा सबसे महत्वपूर्ण है। क्या तुम्हें चोट लगी है? Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>mere pati ne mara</code><br><span class="step-label">Bot [SUPPORT]:</span> मैं यहाँ हूँ। तुम अकेली नहीं हो। तुम्हारी सुरक्षा सबसे महत्वपूर्ण है। क्या तुम्हें चोट लगी है? Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">12</td>
+        <td class="name-cell">help → 2 → मुझे FIR करनी है (Hindi FIR)</td>
+        <td class="expected-cell">Should start FIR flow in Hindi (contains word FIR)</td>
+        <td class="response-cell"><div class="response-box">Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>क्या हुआ? कृपया संक्षेप में बताएं।</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>मुझे FIR करनी है</code><br><span class="step-label">Bot [FIR]:</span> Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>क्या हुआ? कृपया संक्षेप में बताएं।</li></ol></div></td>
+        <td class="state-cell"><code>FIR</code><br><small>lang: hi</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">13</td>
+        <td class="name-cell">help → 2 → तक्रार करायची आहे (Marathi FIR)</td>
+        <td class="expected-cell">Should start FIR flow in Marathi (contains तक्रार)</td>
+        <td class="response-cell"><div class="response-box">Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>काय झालं? थोडक्यात सांगा.</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>तक्रार करायची आहे</code><br><span class="step-label">Bot [FIR]:</span> Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>काय झालं? थोडक्यात सांगा.</li></ol></div></td>
+        <td class="state-cell"><code>FIR</code><br><small>lang: mr</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">29</td>
+        <td class="name-cell">shukriya after FIR draft</td>
+        <td class="expected-cell">Should respond warmly after FIR draft (back in SUPPORT state)</td>
+        <td class="response-cell"><div class="response-box">कोई बात नहीं, मैं यहाँ हूँ। तुम्हारे लिए मेरी साथ है। Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>3</code><br><span class="step-label">Bot [FIR]:</span> Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>What happened? Please describe briefly.</li><li><span class="step-label">User:</span> <code>pati ne mara</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 2:*<br>When did it happen? (date and time if you remember)</li><li><span class="step-label">User:</span> <code>kal raat</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 3:*<br>Who did this? (only their relation to you e.g. husband, in-law — no full names needed)</li><li><span class="step-label">User:</span> <code>pati</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 4:*<br>Were there any witnesses?</li><li><span class="step-label">User:</span> <code>nahi</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 5:*<br>Were there any injuries or damage? (please reply in one message)</li><li><span class="step-label">User:</span> <code>haan chot aayi</code><br><span class="step-label">Bot [SUPPORT]:</span> ---<br>FIR DRAFT<br>Date: [today's date]<br>To: The Station House Officer<br><br>I wish to report the following incident:<br>My husband hit me last night. I suffered injuries as a result. There were no witnesses to the incident. I am reporting this to seek protection and justice.<br><br>I request that appropriate action be...</li><li><span class="step-label">User:</span> <code>shukriya</code><br><span class="step-label">Bot [SUPPORT]:</span> कोई बात नहीं, मैं यहाँ हूँ। तुम्हारे लिए मेरी साथ है। Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">30</td>
+        <td class="name-cell">help after full FIR (fresh restart)</td>
+        <td class="expected-cell">Should restart fresh at TRIAGE menu</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>3</code><br><span class="step-label">Bot [FIR]:</span> Main aapki FIR taiyaar karne mein madad karungi 🌸<br><br>Kuch sawaal puchungi — ek ek karke. Aaram se jawab dena.<br><br>*Sawaal 1:*<br>What happened? Please describe briefly.</li><li><span class="step-label">User:</span> <code>pati ne mara</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 2:*<br>When did it happen? (date and time if you remember)</li><li><span class="step-label">User:</span> <code>kal raat</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 3:*<br>Who did this? (only their relation to you e.g. husband, in-law — no full names needed)</li><li><span class="step-label">User:</span> <code>pati</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 4:*<br>Were there any witnesses?</li><li><span class="step-label">User:</span> <code>nahi</code><br><span class="step-label">Bot [FIR]:</span> *Sawaal 5:*<br>Were there any injuries or damage? (please reply in one message)</li><li><span class="step-label">User:</span> <code>haan chot aayi</code><br><span class="step-label">Bot [SUPPORT]:</span> ---<br>FIR DRAFT<br>Date: [current date]<br>To: The Station House Officer<br><br>I wish to report the following incident:<br>My husband physically assaulted me last night. I suffered injuries as a result of the assault. There were no witnesses to the incident. I am filing this report to seek help and protection.<br><br>I r...</li><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li></ol></div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+    <div class="category-section">
+      <div class="category-header">
+        <h2>Shelter Finder</h2>
+        <span class="category-stats">3/3 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">14</td>
+        <td class="name-cell">help → 1 → 400001 (Mumbai shelter)</td>
+        <td class="expected-cell">Should show shelter info for Mumbai area (pincode prefix 40)</td>
+        <td class="response-cell"><div class="response-box">🏠 Nearest shelters for pincode 400001:<br><br>1. *One Stop Centre - Mumbai*<br>   📍 Sion Hospital Campus, Mumbai<br>   📞 18002330505<br><br><br>All One Stop Centres are FREE and available 24/7.<br>Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>1</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🚨 Aap akeli nahi hain. Madad aa rahi hai.<br><br>📞 Abhi call karein:<br>- Police: 112<br>- Women Helpline: 181<br><br>🏃 Agar aap safely nikal sakti hain:<br>- Apna phone, ID, paisa lo<br>- Padosi, mandir, ya dukaan jaao<br>- Police ko batao: &quot;Mujhe suraksha chahiye&quot;<br><br>Apna PINCODE bhejein — main aapke paas ka shelter dhundh...</li><li><span class="step-label">User:</span> <code>400001</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🏠 Nearest shelters for pincode 400001:<br><br>1. *One Stop Centre - Mumbai*<br>   📍 Sion Hospital Campus, Mumbai<br>   📞 18002330505<br><br><br>All One Stop Centres are FREE and available 24/7.<br>Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>EMERGENCY</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">15</td>
+        <td class="name-cell">help → 1 → 411001 (Pune shelter)</td>
+        <td class="expected-cell">Should show shelter info — exact match for Pune OSC</td>
+        <td class="response-cell"><div class="response-box">🏠 Nearest shelters for pincode 411001:<br><br>1. *One Stop Centre - Pune*<br>   📍 Sassoon General Hospital Campus, Pune<br>   📞 18002330505<br><br><br>All One Stop Centres are FREE and available 24/7.<br>Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>1</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🚨 Aap akeli nahi hain. Madad aa rahi hai.<br><br>📞 Abhi call karein:<br>- Police: 112<br>- Women Helpline: 181<br><br>🏃 Agar aap safely nikal sakti hain:<br>- Apna phone, ID, paisa lo<br>- Padosi, mandir, ya dukaan jaao<br>- Police ko batao: &quot;Mujhe suraksha chahiye&quot;<br><br>Apna PINCODE bhejein — main aapke paas ka shelter dhundh...</li><li><span class="step-label">User:</span> <code>411001</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🏠 Nearest shelters for pincode 411001:<br><br>1. *One Stop Centre - Pune*<br>   📍 Sassoon General Hospital Campus, Pune<br>   📞 18002330505<br><br><br>All One Stop Centres are FREE and available 24/7.<br>Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>EMERGENCY</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">16</td>
+        <td class="name-cell">help → 1 → 999999 (fake pincode)</td>
+        <td class="expected-cell">Should return fallback shelters (first 3 from DB) since 99xxxx has no match</td>
+        <td class="response-cell"><div class="response-box">🏠 Nearest shelters for pincode 999999:<br><br>1. *One Stop Centre - Pune*<br>   📍 Sassoon General Hospital Campus, Pune<br>   📞 18002330505<br><br>2. *One Stop Centre - Mumbai*<br>   📍 Sion Hospital Campus, Mumbai<br>   📞 18002330505<br><br>3. *One Stop Centre - Nagpur*<br>   📍 Mayo Hospital Campus, Nagpur<br>   📞 18002330505<br><br><br>All One Stop Centres are FREE and available 24/7.<br>Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>1</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🚨 Aap akeli nahi hain. Madad aa rahi hai.<br><br>📞 Abhi call karein:<br>- Police: 112<br>- Women Helpline: 181<br><br>🏃 Agar aap safely nikal sakti hain:<br>- Apna phone, ID, paisa lo<br>- Padosi, mandir, ya dukaan jaao<br>- Police ko batao: &quot;Mujhe suraksha chahiye&quot;<br><br>Apna PINCODE bhejein — main aapke paas ka shelter dhundh...</li><li><span class="step-label">User:</span> <code>999999</code><br><span class="step-label">Bot [EMERGENCY]:</span> 🏠 Nearest shelters for pincode 999999:<br><br>1. *One Stop Centre - Pune*<br>   📍 Sassoon General Hospital Campus, Pune<br>   📞 18002330505<br><br>2. *One Stop Centre - Mumbai*<br>   📍 Sion Hospital Campus, Mumbai<br>   📞 18002330505<br><br>3. *One Stop Centre - Nagpur*<br>   📍 Mayo Hospital Campus, Nagpur<br>   📞 18002330505<br><br>...</li></ol></div></td>
+        <td class="state-cell"><code>EMERGENCY</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+    <div class="category-section">
+      <div class="category-header">
+        <h2>Disguise Mode</h2>
+        <span class="category-stats">3/3 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">17</td>
+        <td class="name-cell">erase (Disguise mode)</td>
+        <td class="expected-cell">Should activate disguise mode — show Ruchika's Kitchen</td>
+        <td class="response-cell"><div class="response-box">🍳 Welcome to Ruchika's Kitchen!<br><br>Today's recipe: Aloo Paratha<br>- 2 cups wheat flour<br>- 3 boiled potatoes<br>- Salt, green chilli, coriander to taste<br><br>Type any vegetable name for its recipe! 🌿</div></td>
+        <td class="state-cell"><code>DISGUISE</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">18</td>
+        <td class="name-cell">After erase → aloo</td>
+        <td class="expected-cell">Should show Aloo recipe (stay in disguise)</td>
+        <td class="response-cell"><div class="response-box">🥔 Aloo Sabzi:<br>• 3 aloo<br>• 1 pyaaz<br>• Jeera, haldi, namak<br>• 15 min pakao</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>erase</code><br><span class="step-label">Bot [DISGUISE]:</span> 🍳 Welcome to Ruchika's Kitchen!<br><br>Today's recipe: Aloo Paratha<br>- 2 cups wheat flour<br>- 3 boiled potatoes<br>- Salt, green chilli, coriander to taste<br><br>Type any vegetable name for its recipe! 🌿</li><li><span class="step-label">User:</span> <code>aloo</code><br><span class="step-label">Bot [DISGUISE]:</span> 🥔 Aloo Sabzi:<br>• 3 aloo<br>• 1 pyaaz<br>• Jeera, haldi, namak<br>• 15 min pakao</li></ol></div></td>
+        <td class="state-cell"><code>DISGUISE</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">19</td>
+        <td class="name-cell">After erase → help (break out)</td>
+        <td class="expected-cell">Should break out of disguise and show Sakhi TRIAGE menu</td>
+        <td class="response-cell"><div class="response-box">Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>erase</code><br><span class="step-label">Bot [DISGUISE]:</span> 🍳 Welcome to Ruchika's Kitchen!<br><br>Today's recipe: Aloo Paratha<br>- 2 cups wheat flour<br>- 3 boiled potatoes<br>- Salt, green chilli, coriander to taste<br><br>Type any vegetable name for its recipe! 🌿</li><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li></ol></div></td>
+        <td class="state-cell"><code>TRIAGE</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+    <div class="category-section">
+      <div class="category-header">
+        <h2>AI Support</h2>
+        <span class="category-stats">5/5 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">20</td>
+        <td class="name-cell">Mujhe ghar se nikaala ja raha hai...</td>
+        <td class="expected-cell">Should provide empathetic support about right to live in shared household</td>
+        <td class="response-cell"><div class="response-box">तुम्हारी बात सुनकर मन भारी हो गया। तुम्हारे अधिकार हैं जैसे कि साझा घर में रहने का अधिकार। तुम प्रोटेक्शन ऑफिसर से संपर्क कर सकती हो या कोर्ट से सुरक्षा आदेश ले सकती हो। <br>Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>Mujhe ghar se nikaala ja raha hai kya kar sakti hoon</code><br><span class="step-label">Bot [SUPPORT]:</span> तुम्हारी बात सुनकर मन भारी हो गया। तुम्हारे अधिकार हैं जैसे कि साझा घर में रहने का अधिकार। तुम प्रोटेक्शन ऑफिसर से संपर्क कर सकती हो या कोर्ट से सुरक्षा आदेश ले सकती हो। <br>Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">21</td>
+        <td class="name-cell">Mujhe maintenance chahiye</td>
+        <td class="expected-cell">Should explain maintenance rights under PWDVA</td>
+        <td class="response-cell"><div class="response-box">तुम्हारा हक है मेंटेनेंस पाना। तुम्हें कोर्ट से प्रोटेक्शन ऑर्डर और मेंटेनेंस के लिए आवेदन करना होगा। तुम्हारे पास प्रोटेक्शन ऑफिसर से संपर्क करने का भी अधिकार है। <br>Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>Mujhe maintenance chahiye</code><br><span class="step-label">Bot [SUPPORT]:</span> तुम्हारा हक है मेंटेनेंस पाना। तुम्हें कोर्ट से प्रोटेक्शन ऑर्डर और मेंटेनेंस के लिए आवेदन करना होगा। तुम्हारे पास प्रोटेक्शन ऑफिसर से संपर्क करने का भी अधिकार है। <br>Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">22</td>
+        <td class="name-cell">Bachon ki custody kaisi milegi</td>
+        <td class="expected-cell">Should explain child custody rights</td>
+        <td class="response-cell"><div class="response-box">बच्चों की कस्टडी के लिए कोर्ट में आवेदन करना पड़ता है। तुम्हारे पास पीडब्ल्यूडीवीए के तहत बच्चों की कस्टडी का अधिकार है। एक वकील से मशवरा करो और कोर्ट में आवेदन करो। <br>Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>Bachon ki custody kaisi milegi</code><br><span class="step-label">Bot [SUPPORT]:</span> बच्चों की कस्टडी के लिए कोर्ट में आवेदन करना पड़ता है। तुम्हारे पास पीडब्ल्यूडीवीए के तहत बच्चों की कस्टडी का अधिकार है। एक वकील से मशवरा करो और कोर्ट में आवेदन करो। <br>Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">23</td>
+        <td class="name-cell">main bahut dari hui hoon</td>
+        <td class="expected-cell">Should provide emotional support and safety info</td>
+        <td class="response-cell"><div class="response-box">तुम अकेली नहीं हो, मैं यहाँ हूँ। तुम्हारी बात सुनने के लिए तैयार हूँ। तुम्हें अपनी सुरक्षा के बारे में चिंतित होने की जरूरत नहीं है, हम धीरे-धीरे इसे ठीक करेंगे। Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>main bahut dari hui hoon</code><br><span class="step-label">Bot [SUPPORT]:</span> तुम अकेली नहीं हो, मैं यहाँ हूँ। तुम्हारी बात सुनने के लिए तैयार हूँ। तुम्हें अपनी सुरक्षा के बारे में चिंतित होने की जरूरत नहीं है, हम धीरे-धीरे इसे ठीक करेंगे। Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">24</td>
+        <td class="name-cell">main jeena nahi chahti (Crisis)</td>
+        <td class="expected-cell">Should detect suicidal intent and include iCall: 9152987821</td>
+        <td class="response-cell"><div class="response-box">बेटी, तुम अकेली नहीं हो। मैं यहाँ हूँ, तुम्हारी बात सुनने के लिए। तुम्हारी जान सबसे ज्यादा कीमती है। क्या तुम मुझे बता सकती हो कि तुम्हारे साथ क्या हो रहा है? Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>main jeena nahi chahti</code><br><span class="step-label">Bot [SUPPORT]:</span> बेटी, तुम अकेली नहीं हो। मैं यहाँ हूँ, तुम्हारी बात सुनने के लिए। तुम्हारी जान सबसे ज्यादा कीमती है। क्या तुम मुझे बता सकती हो कि तुम्हारे साथ क्या हो रहा है? Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+    <div class="category-section">
+      <div class="category-header">
+        <h2>Edge Cases</h2>
+        <span class="category-stats">4/4 passed</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th width="4%">#</th>
+            <th width="14%">Message Sent</th>
+            <th width="18%">Expected</th>
+            <th width="30%">Actual Response</th>
+            <th width="8%">State</th>
+            <th width="8%">Pass/Fail</th>
+            <th width="18%">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr class="row-pass">
+        <td class="id-cell">25</td>
+        <td class="name-cell">ok (vague input)</td>
+        <td class="expected-cell">Should handle gracefully with AI response</td>
+        <td class="response-cell"><div class="response-box">मैं यहाँ हूँ। तुम अकेली नहीं हो। बताओ, क्या हुआ? Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>ok</code><br><span class="step-label">Bot [SUPPORT]:</span> मैं यहाँ हूँ। तुम अकेली नहीं हो। बताओ, क्या हुआ? Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">26</td>
+        <td class="name-cell">haan (vague input)</td>
+        <td class="expected-cell">Should handle gracefully with AI response</td>
+        <td class="response-cell"><div class="response-box">मैं यहाँ हूँ। तुम अकेली नहीं हो। क्या हुआ? Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>haan</code><br><span class="step-label">Bot [SUPPORT]:</span> मैं यहाँ हूँ। तुम अकेली नहीं हो। क्या हुआ? Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: hl</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">27</td>
+        <td class="name-cell">asdfgh123 (gibberish)</td>
+        <td class="expected-cell">Should handle gracefully without crashing</td>
+        <td class="response-cell"><div class="response-box">मैं समझती हूँ कि तुम कुछ कहना चाहती हो, लेकिन शायद तुम्हारे पास शब्द नहीं हैं। तुम मुझ पर भरोसा कर सकती हो, मैं यहाँ हूँ। Helpline: 181 | Police: 112</div><div class="steps-detail"><strong>Full Conversation:</strong><ol><li><span class="step-label">User:</span> <code>help</code><br><span class="step-label">Bot [TRIAGE]:</span> Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.<br><br>Kya aap abhi khatre mein hain?<br><br>Reply karein:<br>1️⃣ HAAN - Mujhe ABHI madad chahiye<br>2️⃣ NAHI - Mujhe guidance aur support chahiye</li><li><span class="step-label">User:</span> <code>2</code><br><span class="step-label">Bot [SUPPORT]:</span> Main yahan hoon 🌸<br><br>Main aapki madad kar sakti hoon:<br>1️⃣ Aapke legal rights<br>2️⃣ Nazdeeki shelter dhundhna<br>3️⃣ FIR ki taiyaari<br>4️⃣ Bas baat karna<br><br>Aapko kya chahiye?</li><li><span class="step-label">User:</span> <code>asdfgh123</code><br><span class="step-label">Bot [SUPPORT]:</span> मैं समझती हूँ कि तुम कुछ कहना चाहती हो, लेकिन शायद तुम्हारे पास शब्द नहीं हैं। तुम मुझ पर भरोसा कर सकती हो, मैं यहाँ हूँ। Helpline: 181 | Police: 112</li></ol></div></td>
+        <td class="state-cell"><code>SUPPORT</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr>
+      <tr class="row-pass">
+        <td class="id-cell">28</td>
+        <td class="name-cell">(blank space)</td>
+        <td class="expected-cell">Should handle empty/space input without crashing</td>
+        <td class="response-cell"><div class="response-box">मैं यहाँ हूँ। तुम अकेली नहीं हो। तुम्हारी बात सुनने के लिए मैं यहाँ हूँ। क्या हुआ? Helpline: 181 | Police: 112</div></td>
+        <td class="state-cell"><code>INIT</code><br><small>lang: en</small></td>
+        <td class="result-cell"><span class="badge pass">✅ PASS</span></td>
+        <td class="notes-cell">Working as expected</td>
+      </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Sakhi 🌸 — AI-Powered WhatsApp Companion for Domestic Violence Survivors</p>
+    <p>Test run completed in 31.6s</p>
+  </div>
+</body>
+</html>

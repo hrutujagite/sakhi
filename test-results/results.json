@@ -1,0 +1,982 @@
+{
+  "meta": {
+    "timestamp": "2026-05-12T05:58:15.961Z",
+    "passed": 30,
+    "failed": 0,
+    "total": 30,
+    "elapsed": "35.7"
+  },
+  "tests": [
+    {
+      "id": 1,
+      "name": "help",
+      "category": "Help Triggers",
+      "expected": "Should show Sakhi TRIAGE menu with options 1 and 2",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "madad",
+      "category": "Help Triggers",
+      "expected": "Should show Sakhi TRIAGE menu (Hinglish trigger)",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "madad",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "bachao",
+      "category": "Help Triggers",
+      "expected": "Should show Sakhi TRIAGE menu (Hinglish trigger)",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "bachao",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "मदद (Hindi)",
+      "category": "Help Triggers",
+      "expected": "Should show Sakhi TRIAGE menu (Hindi trigger)",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "hi",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "मदद",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "hi"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "मदत (Marathi)",
+      "category": "Help Triggers",
+      "expected": "Should show Sakhi TRIAGE menu (Marathi trigger)",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "hi",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "मदत",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "hi"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "danger",
+      "category": "Help Triggers",
+      "expected": "Should show Sakhi TRIAGE menu",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "danger",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "help → reply 1 (Emergency)",
+      "category": "Triage Flow",
+      "expected": "Should transition to EMERGENCY, show police numbers 112 and 181, ask for pincode",
+      "actualResponse": "🚨 Aap akeli nahi hain. Madad aa rahi hai.\n\n📞 Abhi call karein:\n- Police: 112\n- Women Helpline: 181\n\n🏃 Agar aap safely nikal sakti hain:\n- Apna phone, ID, paisa lo\n- Padosi, mandir, ya dukaan jaao\n- Police ko batao: \"Mujhe suraksha chahiye\"\n\nApna PINCODE bhejein — main aapke paas ka shelter dhundhungi.",
+      "state": "EMERGENCY",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "1",
+          "response": "🚨 Aap akeli nahi hain. Madad aa rahi hai.\n\n📞 Abhi call karein:\n- Police: 112\n- Women Helpline: 181\n\n🏃 Agar aap safely nikal sakti hain:\n- Apna phone, ID, paisa lo\n- Padosi, mandir, ya dukaan jaao\n- Police ko batao: \"Mujhe suraksha chahiye\"\n\nApna PINCODE bhejein — main aapke paas ka shelter dhundhungi.",
+          "state": "EMERGENCY",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "help → reply 2 (Support)",
+      "category": "Triage Flow",
+      "expected": "Should transition to SUPPORT, show 4 options menu",
+      "actualResponse": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+      "state": "SUPPORT",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "help → 2 → reply 3 (FIR start)",
+      "category": "FIR Flow",
+      "expected": "Should start FIR flow with Sawaal 1",
+      "actualResponse": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nWhat happened? Please describe briefly.",
+      "state": "FIR",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "3",
+          "response": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nWhat happened? Please describe briefly.",
+          "state": "FIR",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "During FIR → pincode 400001",
+      "category": "FIR Flow",
+      "expected": "Should record pincode as FIR answer (NOT trigger shelter search), ask next question",
+      "actualResponse": "*Sawaal 2:*\nWhen did it happen? (date and time if you remember)",
+      "state": "FIR",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "3",
+          "response": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nWhat happened? Please describe briefly.",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 4,
+          "message": "400001",
+          "response": "*Sawaal 2:*\nWhen did it happen? (date and time if you remember)",
+          "state": "FIR",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "help → 2 → mere pati ne mara (Hinglish FIR)",
+      "category": "FIR Flow",
+      "expected": "Should trigger AI response (note: \"mere pati ne mara\" may NOT trigger FIR flow — no FIR keyword)",
+      "actualResponse": "Tumhari safety sabse pehle. Agar tumhare paas koi trusted friend ya relative hai, toh unke paas jaao. Police station jaakar FIR loddo, yeh zaroori hai. Tum 112 ya 100 par call kar sakti ho police bulane ke liye. Agar tumhe dar lag raha hai, toh iCall: 9152987821 par call karo, ve tumhari madad karenge. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "mere pati ne mara",
+          "response": "Tumhari safety sabse pehle. Agar tumhare paas koi trusted friend ya relative hai, toh unke paas jaao. Police station jaakar FIR loddo, yeh zaroori hai. Tum 112 ya 100 par call kar sakti ho police bulane ke liye. Agar tumhe dar lag raha hai, toh iCall: 9152987821 par call karo, ve tumhari madad karenge. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "help → 2 → मुझे FIR करनी है (Hindi FIR)",
+      "category": "FIR Flow",
+      "expected": "Should start FIR flow in Hindi (contains word FIR)",
+      "actualResponse": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nक्या हुआ? कृपया संक्षेप में बताएं।",
+      "state": "FIR",
+      "lang": "hi",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "मुझे FIR करनी है",
+          "response": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nक्या हुआ? कृपया संक्षेप में बताएं।",
+          "state": "FIR",
+          "lang": "hi"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "help → 2 → तक्रार करायची आहे (Marathi FIR)",
+      "category": "FIR Flow",
+      "expected": "Should start FIR flow in Marathi (contains तक्रार)",
+      "actualResponse": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nकाय झालं? थोडक्यात सांगा.",
+      "state": "FIR",
+      "lang": "mr",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "तक्रार करायची आहे",
+          "response": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nकाय झालं? थोडक्यात सांगा.",
+          "state": "FIR",
+          "lang": "mr"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "help → 1 → 400001 (Mumbai shelter)",
+      "category": "Shelter Finder",
+      "expected": "Should show shelter info for Mumbai area (pincode prefix 40)",
+      "actualResponse": "🏠 Nearest shelters for pincode 400001:\n\n1. *One Stop Centre - Mumbai City*\n   📍 One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012, Mumbai City, Maharashtra - 400012\n   📞 9653660408\n\n2. *One Stop Centre - Mumbai Suburban*\n   📍 Female Beggers Home, 1st Fl.R.C. Marg, Opp. Jain Mandir, Chembur(E), Mumbai-400071, Mumbai Suburban, Maharashtra - 400071\n   📞 9702962025\n\n3. *One Stop Centre - Mumbai Suburban-II*\n   📍 10 th floor, HBT Hospitral, jogeshwari (E) Mumbai-60, Mumbai Suburban-II, Maharashtra - 400060\n   📞 7045394766\n\n\nAll One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112",
+      "state": "EMERGENCY",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "1",
+          "response": "🚨 Aap akeli nahi hain. Madad aa rahi hai.\n\n📞 Abhi call karein:\n- Police: 112\n- Women Helpline: 181\n\n🏃 Agar aap safely nikal sakti hain:\n- Apna phone, ID, paisa lo\n- Padosi, mandir, ya dukaan jaao\n- Police ko batao: \"Mujhe suraksha chahiye\"\n\nApna PINCODE bhejein — main aapke paas ka shelter dhundhungi.",
+          "state": "EMERGENCY",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "400001",
+          "response": "🏠 Nearest shelters for pincode 400001:\n\n1. *One Stop Centre - Mumbai City*\n   📍 One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012, Mumbai City, Maharashtra - 400012\n   📞 9653660408\n\n2. *One Stop Centre - Mumbai Suburban*\n   📍 Female Beggers Home, 1st Fl.R.C. Marg, Opp. Jain Mandir, Chembur(E), Mumbai-400071, Mumbai Suburban, Maharashtra - 400071\n   📞 9702962025\n\n3. *One Stop Centre - Mumbai Suburban-II*\n   📍 10 th floor, HBT Hospitral, jogeshwari (E) Mumbai-60, Mumbai Suburban-II, Maharashtra - 400060\n   📞 7045394766\n\n\nAll One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112",
+          "state": "EMERGENCY",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "help → 1 → 411001 (Pune shelter)",
+      "category": "Shelter Finder",
+      "expected": "Should show shelter info — exact match for Pune OSC",
+      "actualResponse": "🏠 Nearest shelters for pincode 411001:\n\n1. *One Stop Centre - Pune-2*\n   📍 Sakhi One Stop Centre, 1st floor, Rajiv Gandhi Hospital, Yerawada, Pune-411006, Pune-2, Maharashtra - 411006\n   📞 7387934588\n\n\nAll One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112",
+      "state": "EMERGENCY",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "1",
+          "response": "🚨 Aap akeli nahi hain. Madad aa rahi hai.\n\n📞 Abhi call karein:\n- Police: 112\n- Women Helpline: 181\n\n🏃 Agar aap safely nikal sakti hain:\n- Apna phone, ID, paisa lo\n- Padosi, mandir, ya dukaan jaao\n- Police ko batao: \"Mujhe suraksha chahiye\"\n\nApna PINCODE bhejein — main aapke paas ka shelter dhundhungi.",
+          "state": "EMERGENCY",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "411001",
+          "response": "🏠 Nearest shelters for pincode 411001:\n\n1. *One Stop Centre - Pune-2*\n   📍 Sakhi One Stop Centre, 1st floor, Rajiv Gandhi Hospital, Yerawada, Pune-411006, Pune-2, Maharashtra - 411006\n   📞 7387934588\n\n\nAll One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112",
+          "state": "EMERGENCY",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "help → 1 → 999999 (fake pincode)",
+      "category": "Shelter Finder",
+      "expected": "Should return fallback shelters (first 3 from DB) since 99xxxx has no match",
+      "actualResponse": "🏠 Nearest shelters for pincode 999999:\n\n1. *One Stop Centre - Ahmadnagar*\n   📍 Dilasa Sakhi One Stop Center,Near Top up Petrol pump Ahamadnager-414001, Ahmadnagar, Maharashtra - 414001\n   📞 0241-2550289\n\n2. *One Stop Centre - Akola*\n   📍 One Stop Centre, Durga Chowk near Mount Carmel School Akola-444001, Akola, Maharashtra - 444001\n   📞 0724-2428549\n\n3. *One Stop Centre - Amravati*\n   📍 One Stop Centre, District Women Hospital, Shrikrushna Peth,Amravati. Amravati District, Maharashtra- 444606, Amravati, Maharashtra - 444606\n   📞 0721-2660382\n\n\nAll One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112",
+      "state": "EMERGENCY",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "1",
+          "response": "🚨 Aap akeli nahi hain. Madad aa rahi hai.\n\n📞 Abhi call karein:\n- Police: 112\n- Women Helpline: 181\n\n🏃 Agar aap safely nikal sakti hain:\n- Apna phone, ID, paisa lo\n- Padosi, mandir, ya dukaan jaao\n- Police ko batao: \"Mujhe suraksha chahiye\"\n\nApna PINCODE bhejein — main aapke paas ka shelter dhundhungi.",
+          "state": "EMERGENCY",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "999999",
+          "response": "🏠 Nearest shelters for pincode 999999:\n\n1. *One Stop Centre - Ahmadnagar*\n   📍 Dilasa Sakhi One Stop Center,Near Top up Petrol pump Ahamadnager-414001, Ahmadnagar, Maharashtra - 414001\n   📞 0241-2550289\n\n2. *One Stop Centre - Akola*\n   📍 One Stop Centre, Durga Chowk near Mount Carmel School Akola-444001, Akola, Maharashtra - 444001\n   📞 0724-2428549\n\n3. *One Stop Centre - Amravati*\n   📍 One Stop Centre, District Women Hospital, Shrikrushna Peth,Amravati. Amravati District, Maharashtra- 444606, Amravati, Maharashtra - 444606\n   📞 0721-2660382\n\n\nAll One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112",
+          "state": "EMERGENCY",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "erase (Disguise mode)",
+      "category": "Disguise Mode",
+      "expected": "Should activate disguise mode — show Ruchika's Kitchen",
+      "actualResponse": "🍳 Welcome to Ruchika's Kitchen!\n\nToday's recipe: Aloo Paratha\n- 2 cups wheat flour\n- 3 boiled potatoes\n- Salt, green chilli, coriander to taste\n\nType any vegetable name for its recipe! 🌿",
+      "state": "DISGUISE",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "erase",
+          "response": "🍳 Welcome to Ruchika's Kitchen!\n\nToday's recipe: Aloo Paratha\n- 2 cups wheat flour\n- 3 boiled potatoes\n- Salt, green chilli, coriander to taste\n\nType any vegetable name for its recipe! 🌿",
+          "state": "DISGUISE",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "After erase → aloo",
+      "category": "Disguise Mode",
+      "expected": "Should show Aloo recipe (stay in disguise)",
+      "actualResponse": "🥔 Aloo Sabzi:\n• 3 aloo\n• 1 pyaaz\n• Jeera, haldi, namak\n• 15 min pakao",
+      "state": "DISGUISE",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "erase",
+          "response": "🍳 Welcome to Ruchika's Kitchen!\n\nToday's recipe: Aloo Paratha\n- 2 cups wheat flour\n- 3 boiled potatoes\n- Salt, green chilli, coriander to taste\n\nType any vegetable name for its recipe! 🌿",
+          "state": "DISGUISE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "aloo",
+          "response": "🥔 Aloo Sabzi:\n• 3 aloo\n• 1 pyaaz\n• Jeera, haldi, namak\n• 15 min pakao",
+          "state": "DISGUISE",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "After erase → help (break out)",
+      "category": "Disguise Mode",
+      "expected": "Should break out of disguise and show Sakhi TRIAGE menu",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "erase",
+          "response": "🍳 Welcome to Ruchika's Kitchen!\n\nToday's recipe: Aloo Paratha\n- 2 cups wheat flour\n- 3 boiled potatoes\n- Salt, green chilli, coriander to taste\n\nType any vegetable name for its recipe! 🌿",
+          "state": "DISGUISE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Mujhe ghar se nikaala ja raha hai...",
+      "category": "AI Support",
+      "expected": "Should provide empathetic support about right to live in shared household",
+      "actualResponse": "Tumhara hai right apne matrimonial home mein rehne ka. Tum Section 17 PWDVA ke under Residence Order ke liye Magistrate Court mein apply kar sakti ho. Protection Officer ki madad le sakti ho, unka service free hai. Pehle apne documents ko safe jagah par rakho, jaise ki marriage certificate aur ID proof. Agar tumhare paas koi trusted person hai, toh unhein batao ki tumhein kya ho raha hai. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "Mujhe ghar se nikaala ja raha hai kya kar sakti hoon",
+          "response": "Tumhara hai right apne matrimonial home mein rehne ka. Tum Section 17 PWDVA ke under Residence Order ke liye Magistrate Court mein apply kar sakti ho. Protection Officer ki madad le sakti ho, unka service free hai. Pehle apne documents ko safe jagah par rakho, jaise ki marriage certificate aur ID proof. Agar tumhare paas koi trusted person hai, toh unhein batao ki tumhein kya ho raha hai. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Mujhe maintenance chahiye",
+      "category": "AI Support",
+      "expected": "Should explain maintenance rights under PWDVA",
+      "actualResponse": "Main yahan hoon. Tum akeli nahi ho. Maintenance ke liye tumhe Family Court ya Magistrate Court mein application deni hogi, section 20 PWDVA ke tahat. Pehle apne marriage certificate, husband ki income proof, aur ghar ke kharche ke documents ikattha karo. Phir DLSA (District Legal Services Authority) se free legal aid le sakti ho. Tumhari madad karne ke liye main yahan hoon. Abhi kaya karna hai, main bata sakti hoon. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "Mujhe maintenance chahiye",
+          "response": "Main yahan hoon. Tum akeli nahi ho. Maintenance ke liye tumhe Family Court ya Magistrate Court mein application deni hogi, section 20 PWDVA ke tahat. Pehle apne marriage certificate, husband ki income proof, aur ghar ke kharche ke documents ikattha karo. Phir DLSA (District Legal Services Authority) se free legal aid le sakti ho. Tumhari madad karne ke liye main yahan hoon. Abhi kaya karna hai, main bata sakti hoon. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Bachon ki custody kaisi milegi",
+      "category": "AI Support",
+      "expected": "Should explain child custody rights",
+      "actualResponse": "To get custody of children, apply in Family Court under the Guardianship Act. The court prioritizes the child's welfare and safety. If children are under 5, the mother usually gets custody. Gather documents like birth certificates, income proof, and any evidence of the father's ability to care for the children. Contact the District Legal Services Authority (DLSA) for free legal aid. \nHelpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "Bachon ki custody kaisi milegi",
+          "response": "To get custody of children, apply in Family Court under the Guardianship Act. The court prioritizes the child's welfare and safety. If children are under 5, the mother usually gets custody. Gather documents like birth certificates, income proof, and any evidence of the father's ability to care for the children. Contact the District Legal Services Authority (DLSA) for free legal aid. \nHelpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "main bahut dari hui hoon",
+      "category": "AI Support",
+      "expected": "Should provide emotional support and safety info",
+      "actualResponse": "Main yahan hoon, tum akeli nahi ho. Ek kaam karo, apne phone mein iCall ka number save karo: 9152987821. Agar tumhare paas koi trusted friend ya family member hai, unhe bhi inform karo. Abhi ke liye, ek safe jagah dhundo aur wahan chupke se apni details likh ke rakhna, jaise ki tumhara ID proof aur medical reports. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "main bahut dari hui hoon",
+          "response": "Main yahan hoon, tum akeli nahi ho. Ek kaam karo, apne phone mein iCall ka number save karo: 9152987821. Agar tumhare paas koi trusted friend ya family member hai, unhe bhi inform karo. Abhi ke liye, ek safe jagah dhundo aur wahan chupke se apni details likh ke rakhna, jaise ki tumhara ID proof aur medical reports. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "main jeena nahi chahti (Crisis)",
+      "category": "AI Support",
+      "expected": "Should detect suicidal intent and include iCall: 9152987821",
+      "actualResponse": "Tumhare liye madad hai, main yahan hoon. Tumhari safety sabse zaroori hai. Ek baar iCall helpline number 9152987821 par call karo, ye confidential hai. Agar tumhare paas koi nearby trusted jagah hai, wahan chali jao. Police ko 112 par call karo agar tumhare paas time hai. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "main jeena nahi chahti",
+          "response": "Tumhare liye madad hai, main yahan hoon. Tumhari safety sabse zaroori hai. Ek baar iCall helpline number 9152987821 par call karo, ye confidential hai. Agar tumhare paas koi nearby trusted jagah hai, wahan chali jao. Police ko 112 par call karo agar tumhare paas time hai. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "ok (vague input)",
+      "category": "Edge Cases",
+      "expected": "Should handle gracefully with AI response",
+      "actualResponse": "What's been going on? Is everything okay? If you're in immediate danger, please call 112. If you need to talk, I'm here to listen and help with the next steps.",
+      "state": "SUPPORT",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "ok",
+          "response": "What's been going on? Is everything okay? If you're in immediate danger, please call 112. If you need to talk, I'm here to listen and help with the next steps.",
+          "state": "SUPPORT",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "haan (vague input)",
+      "category": "Edge Cases",
+      "expected": "Should handle gracefully with AI response",
+      "actualResponse": "Main yahan hoon. Tum akeli nahi ho. Ek step jo tum le sakti ho, apne aas paas ke police station ke bare mein pata karna. Kabhi bhi zarurat pade, tum 112 par call kar sakti ho. Helpline number 181 bhi yaad rakho.",
+      "state": "SUPPORT",
+      "lang": "hl",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "haan",
+          "response": "Main yahan hoon. Tum akeli nahi ho. Ek step jo tum le sakti ho, apne aas paas ke police station ke bare mein pata karna. Kabhi bhi zarurat pade, tum 112 par call kar sakti ho. Helpline number 181 bhi yaad rakho.",
+          "state": "SUPPORT",
+          "lang": "hl"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "asdfgh123 (gibberish)",
+      "category": "Edge Cases",
+      "expected": "Should handle gracefully without crashing",
+      "actualResponse": "It seems like you might be trying to reach out but are having trouble expressing yourself. If you're in immediate danger, please call 112 or iCall: 9152987821. If you need to talk, try calling the helpline: 181. Take a deep breath and try to tell me what's going on, I'm here to listen and help. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "asdfgh123",
+          "response": "It seems like you might be trying to reach out but are having trouble expressing yourself. If you're in immediate danger, please call 112 or iCall: 9152987821. If you need to talk, try calling the helpline: 181. Take a deep breath and try to tell me what's going on, I'm here to listen and help. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "(blank space)",
+      "category": "Edge Cases",
+      "expected": "Should handle empty/space input without crashing",
+      "actualResponse": "It seems like you didn't type anything. If you're in immediate danger, please call 112 or iCall: 9152987821. If you need to talk, I'm here to listen and help with the next steps. What's been going on? Helpline: 181 | Police: 112",
+      "state": "INIT",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": " ",
+          "response": "It seems like you didn't type anything. If you're in immediate danger, please call 112 or iCall: 9152987821. If you need to talk, I'm here to listen and help with the next steps. What's been going on? Helpline: 181 | Police: 112",
+          "state": "INIT",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "shukriya after FIR draft",
+      "category": "FIR Flow",
+      "expected": "Should respond warmly after FIR draft (back in SUPPORT state)",
+      "actualResponse": "You're welcome. Remember, you're not alone. If you need help or just someone to talk to, there are people who care. Save the helpline number: 181 and police: 112. Keep your phone charged and emergency numbers handy. Stay safe. Helpline: 181 | Police: 112",
+      "state": "SUPPORT",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "3",
+          "response": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nWhat happened? Please describe briefly.",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 4,
+          "message": "pati ne mara",
+          "response": "*Sawaal 2:*\nWhen did it happen? (date and time if you remember)",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 5,
+          "message": "kal raat",
+          "response": "*Sawaal 3:*\nWho did this? (only their relation to you e.g. husband, in-law — no full names needed)",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 6,
+          "message": "pati",
+          "response": "*Sawaal 4:*\nWere there any witnesses?",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 7,
+          "message": "nahi",
+          "response": "*Sawaal 5:*\nWere there any injuries or damage? (please reply in one message)",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 8,
+          "message": "haan chot aayi",
+          "response": "---\nFIR DRAFT\nDate: [today's date]\nTo: The Station House Officer\n\nI wish to report the following incident: My husband beat me last night. I suffered injuries as a result. There were no witnesses to the incident. \n\nI request that appropriate action be taken.\n---\nShow this at the police station and say: I want to file an FIR",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 9,
+          "message": "shukriya",
+          "response": "You're welcome. Remember, you're not alone. If you need help or just someone to talk to, there are people who care. Save the helpline number: 181 and police: 112. Keep your phone charged and emergency numbers handy. Stay safe. Helpline: 181 | Police: 112",
+          "state": "SUPPORT",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "help after full FIR (fresh restart)",
+      "category": "FIR Flow",
+      "expected": "Should restart fresh at TRIAGE menu",
+      "actualResponse": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+      "state": "TRIAGE",
+      "lang": "en",
+      "passed": true,
+      "error": null,
+      "allStepResponses": [
+        {
+          "step": 1,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        },
+        {
+          "step": 2,
+          "message": "2",
+          "response": "Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 3,
+          "message": "3",
+          "response": "Main aapki FIR taiyaar karne mein madad karungi 🌸\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n\n*Sawaal 1:*\nWhat happened? Please describe briefly.",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 4,
+          "message": "pati ne mara",
+          "response": "*Sawaal 2:*\nWhen did it happen? (date and time if you remember)",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 5,
+          "message": "kal raat",
+          "response": "*Sawaal 3:*\nWho did this? (only their relation to you e.g. husband, in-law — no full names needed)",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 6,
+          "message": "pati",
+          "response": "*Sawaal 4:*\nWere there any witnesses?",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 7,
+          "message": "nahi",
+          "response": "*Sawaal 5:*\nWere there any injuries or damage? (please reply in one message)",
+          "state": "FIR",
+          "lang": "en"
+        },
+        {
+          "step": 8,
+          "message": "haan chot aayi",
+          "response": "---\nFIR DRAFT\nDate: [today's date]\nTo: The Station House Officer\n\nI wish to report that my husband physically assaulted me last night. He hit me, causing injuries. There were no witnesses to the incident. \n\nI request that appropriate action be taken.\n---\nShow this at the police station and say: I want to file an FIR",
+          "state": "SUPPORT",
+          "lang": "en"
+        },
+        {
+          "step": 9,
+          "message": "help",
+          "response": "Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye",
+          "state": "TRIAGE",
+          "lang": "en"
+        }
+      ]
+    }
+  ]
+}
