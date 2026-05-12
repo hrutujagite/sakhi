@@ -1,7 +1,7 @@
 'use strict';
 
 const twilio = require('twilio');
-const { findSheltersByPincode } = require('./shelterFinder');
+const { getBestShelter } = require('./shelterFinder');
 const { generateToken, getTokenData, invalidateToken } = require('./locationToken');
 const sessions = require('./sessions');
 
@@ -186,9 +186,10 @@ const TEMPLATES = {
 const t = (key, lang) => TEMPLATES[key][lang] || TEMPLATES[key].en;
 
 // ─── GOOGLE MAPS LINK ─────────────────────────────────────────────────────────
-// Opens Google Maps with directions FROM user's current GPS TO the shelter.
-// No shelter coordinates needed — Google Maps resolves the address automatically.
 const getMapsLink = (shelter) => {
+  if (shelter.lat && shelter.lng) {
+    return `https://www.google.com/maps?q=${shelter.lat},${shelter.lng}`;
+  }
   const dest = encodeURIComponent(`${shelter.name}, ${shelter.address}`);
   return `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
 };
@@ -309,16 +310,7 @@ const startConfirmTimers = (sender) => {
 };
 
 // ─── SHELTER LOOKUP ───────────────────────────────────────────────────────────
-
-const lookupShelters = (session) => {
-  try {
-    const key = session.pincode || session.district || '';
-    if (!key) return [];
-    return findSheltersByPincode(key) || [];
-  } catch {
-    return [];
-  }
-};
+// (Removed lookupShelters since we use getBestShelter directly)
 
 // ─── BUILD INITIAL EMERGENCY MESSAGE ─────────────────────────────────────────
 
@@ -330,7 +322,9 @@ const buildEmergencyMsg = (session, locationLink) => {
   const shelter = session.emergencyShelter;
   if (shelter) {
     const mapsLink = getMapsLink(shelter);
-    msg += `${t('shelterLabel', lang)}\n🏠 ${shelter.name}\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n📞 ${shelter.phone}\n🗺️ ${mapsLink}\n\n`;
+    msg += `${t('shelterLabel', lang)}\n🏠 ${shelter.name}\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n📞 ${shelter.phone}\n`;
+    if (shelter.distance) msg += `📏 ${shelter.distance} km away\n`;
+    msg += `🗺️ ${mapsLink}\n\n`;
   } else {
     msg += t('shelterFallback', lang) + '\n\n';
   }
@@ -368,9 +362,14 @@ const activateEmergency = async (sender, session) => {
   session.reAlerted = false;
 
   // Step 2 — shelter lookup with fallback
-  const shelters = lookupShelters(session);
-  session.emergencyShelter = shelters[0] || null;
-  session.allShelters = shelters;
+  const shelter = getBestShelter(session);
+  if (shelter && !shelter.isFallback) {
+    session.emergencyShelter = shelter;
+    session.allShelters = [shelter];
+  } else {
+    session.emergencyShelter = null;
+    session.allShelters = [];
+  }
 
   // Step 3 — location token
   let locationLink = null;

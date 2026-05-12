@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { getAIResponse } = require('./utils/groq');
-const { formatShelterResponse } = require('./utils/shelterFinder');
+const { getBestShelter } = require('./utils/shelterFinder');
 
 const testSakhi = async () => {
   console.log('🌸 Testing Sakhi...\n');
@@ -20,10 +20,22 @@ const testSakhi = async () => {
   console.log('\n---\n');
 
   // Test 3: Shelter finder
-  console.log('TEST 3: Shelter finder for Mumbai pincode');
-  console.log('User: 400022');
-  const response3 = formatShelterResponse('400022');
-  console.log('Sakhi:', response3);
+  console.log('TEST 3: Shelter finder using GPS');
+  console.log('User Location: Lat 19.150028011310946, Lng 72.58223580018505 (Thane)');
+  const sessionGPS = {
+    locationCoords: { lat: 19.15, lng: 72.58 }
+  };
+  const responseGPS = getBestShelter(sessionGPS);
+  console.log('Sakhi:', responseGPS);
+  console.log('\n---\n');
+
+  console.log('TEST 3B: Shelter finder using District fallback');
+  console.log('User District: Chandrapur, State: Maharashtra');
+  const sessionFallback = {
+    district: 'Chandrapur', geoState: 'Maharashtra'
+  };
+  const responseFallback = getBestShelter(sessionFallback);
+  console.log('Sakhi:', responseFallback);
   console.log('\n---\n');
 
   // Test 4: Legal rights
