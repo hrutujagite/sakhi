@@ -3,7 +3,7 @@ const router = express.Router();
 const { getTokenData, storeCoords, invalidateToken } = require('../utils/locationToken');
 const { storeLocationInSession } = require('../utils/emergencyMode');
 const twilio = require('twilio');
-const { getBestShelter } = require('../utils/shelterFinder');
+const { findNearestShelters, formatNearestSheltersResponse } = require('../utils/shelterFinder');
 const sessions = require('../utils/sessions');
 
 // ─── GET /loc/:token — Serve the innocent-looking location capture page ───────
@@ -134,33 +134,37 @@ router.post('/:token', express.json(), (req, res) => {
 
   if (data.type === 'support') {
     const session = sessions[data.sender];
-    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
     const to = data.sender;
-    
+
     if (lat != null && lng != null) {
-      console.log(`[GPS] Support location captured for ${data.sender}`);
-      const best = getBestShelter({ locationCoords: { lat, lng } });
-      
-      let msg = '';
-      if (best && !best.isFallback) {
-        msg = `Nearest Support Centre:\n\n📍 *${best.name}*\n`;
-        if (best.distance) msg += `📏 ${best.distance} km away\n`;
-        msg += `📞 ${best.phone}\n\n`;
-        msg += `Directions:\nhttps://www.google.com/maps?q=${best.lat},${best.lng}`;
+      console.log(`[GPS] Support location captured for ${data.sender}: ${lat}, ${lng}`);
+      // TASK 2 & 3: GPS-only, top 3 nearest shelters
+      const nearest = findNearestShelters(lat, lng, 3);
+      const msg = formatNearestSheltersResponse(nearest);
+
+      if (process.env.NODE_ENV !== 'development') {
+        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        client.messages.create({ from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, to, body: msg }).catch(console.error);
       } else {
-        msg = `We couldn't find a support centre within 50km.\n\nPlease call Women Helpline: 181`;
+        console.log(`[DevMode: Simulated Send to ${to}]:\n${msg}`);
       }
-      
-      client.messages.create({ from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, to, body: msg }).catch(console.error);
     } else {
-      client.messages.create({ from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, to, body: `We couldn't access your live location.\n\nPlease enter your district, city, or area manually.` }).catch(console.error);
-      if (session) session.state = 'SUPPORT_SHELTER_DISTRICT';
+      // GPS permission denied — ask user to try again; no district fallback (TASK 2)
+      const noGpsMsg =
+        `We couldn't access your location. \n\n` +
+        `Please tap the link again and allow location access, or call Women Helpline 181 for help finding a nearby centre.`;
+      if (process.env.NODE_ENV !== 'development') {
+        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        client.messages.create({ from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, to, body: noGpsMsg }).catch(console.error);
+      } else {
+        console.log(`[DevMode: Simulated Send to ${to}]: ${noGpsMsg}`);
+      }
     }
-    
+
     if (session && session.state === 'SUPPORT_SHELTER_LOC') {
       session.state = 'SUPPORT';
     }
-    
+
     invalidateToken(token);
     return res.json({ ok: true });
   }

@@ -202,6 +202,30 @@ FIR DRAFT
 150 शब्दांपेक्षा कमी ठेवा. कोणतेही नाव लिहू नका.`
   };
 
+  // ── TASK 4: FIR Filing Guidance (appended in user's language) ────────────────
+  const GUIDANCE = {
+    en: `\n\n📌 *What to do next:*\n` +
+        `• You can file this at the nearest police station or women's police station.\n` +
+        `• *Zero FIR:* You can file at ANY police station, even if the incident happened elsewhere.\n` +
+        `• A *Protection Officer* under the Domestic Violence Act can also support you — free of charge.\n` +
+        `• Helplines: 181 (Women) | 1091 (Women Police) | 112 (Emergency)`,
+    hi: `\n\n📌 *आगे क्या करें:*\n` +
+        `• यह FIR नजदीकी थाने या महिला थाने में दर्ज कर सकती हैं।\n` +
+        `• *Zero FIR:* किसी भी थाने में FIR दर्ज करा सकती हैं, चाहे घटना कहीं भी हुई हो।\n` +
+        `• *सुरक्षा अधिकारी* से भी मुफ्त मदद मिल सकती है — घरेलू हिंसा अधिनियम के तहत।\n` +
+        `• Helplines: 181 | 1091 | 112`,
+    hl: `\n\n📌 *Aage kya karein:*\n` +
+        `• Yeh FIR nazdeeki thane ya mahila thane mein darj kar sakti hain.\n` +
+        `• *Zero FIR:* Kisi bhi thane mein FIR darj kara sakti hain — chahe ghatna kahin bhi hui ho.\n` +
+        `• *Protection Officer* se bhi muft madad mil sakti hai — Domestic Violence Act ke under.\n` +
+        `• Helplines: 181 | 1091 | 112`,
+    mr: `\n\n📌 *पुढे काय करावे:*\n` +
+        `• ही FIR जवळच्या पोलीस ठाण्यात किंवा महिला पोलीस ठाण्यात नोंदवता येते.\n` +
+        `• *Zero FIR:* कोणत्याही ठाण्यात FIR नोंदवता येते — घटना कुठेही घडली असली तरी.\n` +
+        `• *संरक्षण अधिकारी* कडूनही मोफत मदत मिळू शकते — घरगुती हिंसा कायद्यांतर्गत.\n` +
+        `• Helplines: 181 | 1091 | 112`,
+  };
+
   try {
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
@@ -220,7 +244,9 @@ FIR DRAFT
       }
     );
 
-    return response.data.choices[0].message.content;
+    const draft = response.data.choices[0].message.content;
+    const guidance = GUIDANCE[lang] || GUIDANCE.hl;
+    return draft + guidance;
 
   } catch (error) {
     console.error('FIR draft error:', error.message);

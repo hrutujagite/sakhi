@@ -1,6 +1,6 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
-const { formatShelterResponse, getBestShelter, findByDistrict, findByState } = require('../utils/shelterFinder');
+const { formatNearestSheltersResponse, findNearestShelters } = require('../utils/shelterFinder');
 const { generateToken } = require('../utils/locationToken');
 const sessions = require('../utils/sessions');
 const {
@@ -92,6 +92,7 @@ const handleMessage = async (req, res) => {
   const sender = req.body.From;
 
   console.log(`[${new Date().toISOString()}] From ${sender}: ${incomingMsg}`);
+  console.log(req.body);
 
   // Hidden developer command to wipe the session and start from scratch
   if (incomingMsg && incomingMsg.trim().toUpperCase() === 'RESET SESSION') {
@@ -125,6 +126,7 @@ const handleMessage = async (req, res) => {
   }
 
   const session = sessions[sender];
+  console.log(session);
   let responseText = '';
 
   // Track message count and last active time for distress context check
@@ -163,11 +165,42 @@ const handleMessage = async (req, res) => {
       if (pin) {
         session.pincode = pin;
       } else {
-        session.savedArea = incomingMsg; // Fallback if no valid pin found
+        session.savedArea = incomingMsg;
       }
-      session.state = 'SUPPORT';
-      return sendTwiML(res, `Thank you! Setup is complete. 🌸\n\nHow can I help you today?\n1️⃣ Know my legal rights\n2️⃣ Find a nearby shelter\n3️⃣ Prepare an FIR\n4️⃣ Just talk`);
+      // TASK 1: Immediate safety triage before entering SUPPORT
+      session.state = 'POST_ONBOARDING_TRIAGE';
+      return sendTwiML(res,
+        `Thank you! Setup is complete. 🌸\n\n` +
+        `Before we continue —\n` +
+        `*Are you in danger right now?*\n\n` +
+        `1️⃣ Yes — I need help now\n` +
+        `2️⃣ No — I am safe`
+      );
     }
+  }
+
+  // ── POST_ONBOARDING_TRIAGE ────────────────────────────────────────────────────
+  // TASK 1: Safety check after onboarding. Routes to emergency or support menu.
+  const lower = incomingMsg?.toLowerCase().trim() || '';
+  if (session.state === 'POST_ONBOARDING_TRIAGE') {
+    const yesMatch = incomingMsg === '1' || /\b(yes|haan|ha)\b/.test(lower);
+    const noMatch  = incomingMsg === '2' || /\b(no|nahi|nai|safe|ok|okay)\b/.test(lower);
+    if (yesMatch) {
+      responseText = await activateEmergency(sender, session);
+    } else if (noMatch) {
+      session.state = 'SUPPORT';
+      responseText = withHelpFooter(
+        `I am with you. 🌸\n\nHow can I help you today?\n1️⃣ Know my legal rights\n2️⃣ Find a nearby support centre\n3️⃣ Prepare an FIR\n4️⃣ Just talk`
+      );
+    } else {
+      // Re-prompt — no state change
+      responseText =
+        `🌸 Before we continue —\n` +
+        `*Are you in danger right now?*\n\n` +
+        `1️⃣ Yes — I need help now\n` +
+        `2️⃣ No — I am safe`;
+    }
+    return sendTwiML(res, responseText);
   }
 
   // Detect language for non-FIR states
@@ -175,7 +208,6 @@ const handleMessage = async (req, res) => {
     session.lang = detectLang(incomingMsg);
   }
 
-  const lower = incomingMsg?.toLowerCase().trim() || '';
 
   // ── PRIORITY 1: DISGUISE KEYWORD (silent emergency) ─────────────────────────
   const disguiseKw = session.disguiseKeyword;
@@ -279,12 +311,10 @@ const handleMessage = async (req, res) => {
     return sendTwiML(res, responseText);
   }
 
-  // ── PRIORITY 8: PINCODE (not during FIR) ─────────────────────────────────────
+  // ── PRIORITY 8: PINCODE — save only, no shelter lookup (TASK 2: GPS-only shelters) ──
   if (extractPincode(incomingMsg) && session.state !== 'FIR') {
-    const pincode = extractPincode(incomingMsg);
-    session.pincode = pincode; // save for emergency use
-    responseText = withHelpFooter(formatShelterResponse(pincode));
-    return sendTwiML(res, responseText);
+    session.pincode = extractPincode(incomingMsg); // saved for session context only
+    // Do not trigger shelter lookup here — all shelter finding is now GPS-based
   }
 
   // ── TRIAGE ────────────────────────────────────────────────────────────────────
@@ -302,53 +332,14 @@ const handleMessage = async (req, res) => {
     return sendTwiML(res, responseText);
   }
 
-  // ── MENU OPTION 2: FIND SHELTER ────────────────────────────────────────────────
+  // ── MENU OPTION 2: FIND SHELTER (TASK 2: GPS-only) ──────────────────────────
   if (session.state === 'SUPPORT' && (incomingMsg === '2' || lower.includes('shelter'))) {
-    session.state = 'SUPPORT_SHELTER_MENU';
+    session.state = 'SUPPORT_SHELTER_LOC';
+    const token = generateToken(sender, 'support');
+    const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
     responseText = withHelpFooter(
-      `📍 For the most accurate nearby support centres, you can securely share your live location.\n\nReply:\n1️⃣ Share Live Location\n2️⃣ Enter District/Area Manually`
+      `📍 To find support centres near you, please tap the link below to share your location securely:\n\n${BASE_URL}/loc/${token}\n\n_This link opens a secure page. Your location is only used to find nearby shelters._`
     );
-    return sendTwiML(res, responseText);
-  }
-
-  // ── SHELTER MENU HANDLING ─────────────────────────────────────────────────────
-  if (session.state === 'SUPPORT_SHELTER_MENU') {
-    if (incomingMsg === '1') {
-      session.state = 'SUPPORT_SHELTER_LOC';
-      const token = generateToken(sender, 'support');
-      const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
-      responseText = withHelpFooter(
-        `To improve nearby support recommendations, tap below:\n\n${BASE_URL}/loc/${token}`
-      );
-      return sendTwiML(res, responseText);
-    } else if (incomingMsg === '2') {
-      session.state = 'SUPPORT_SHELTER_DISTRICT';
-      responseText = withHelpFooter(`Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)`);
-      return sendTwiML(res, responseText);
-    } else {
-      responseText = withHelpFooter(`Please reply with 1 or 2.`);
-      return sendTwiML(res, responseText);
-    }
-  }
-
-  // ── SHELTER DISTRICT HANDLING ─────────────────────────────────────────────────
-  if (session.state === 'SUPPORT_SHELTER_DISTRICT') {
-    session.district = incomingMsg;
-    // Assume state is Maharashtra for now since all current data is MH
-    session.geoState = 'Maharashtra'; 
-    const shelter = getBestShelter(session);
-    
-    // Reset state
-    session.state = 'SUPPORT';
-    
-    let msg = '';
-    if (shelter && !shelter.isFallback) {
-      msg = `Nearest Support Centre:\n\n📍 *${shelter.name}*\n📞 ${shelter.phone}\n\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
-    } else {
-      msg = `We couldn't find a support centre for ${incomingMsg}.\n\nPlease call Women Helpline: 181`;
-    }
-    
-    responseText = withHelpFooter(msg);
     return sendTwiML(res, responseText);
   }
 

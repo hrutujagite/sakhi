@@ -1,3 +1,179 @@
 {
-  "sessions": {}
+  "sessions": {
+    "whatsapp:+916000926077": {
+      "state": "SUPPORT",
+      "lang": "en",
+      "userName": "Hi",
+      "userAddress": "B wing 503, Om Manusmriti CHS, Dongaripada bus stand, GB road, Thane (w)",
+      "firAnswers": [],
+      "firStep": 0,
+      "messageCount": 8,
+      "lastActiveTime": 1778589324101,
+      "disguiseKeyword": "K",
+      "trustedContacts": [
+        "6000926077"
+      ],
+      "trustedContactNames": "Siddhi",
+      "pincode": "400615",
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false
+    },
+    "whatsapp: 911111111111": {
+      "state": "ONBOARDING_USER_NAME",
+      "lang": "hl",
+      "userName": null,
+      "userAddress": null,
+      "firAnswers": [],
+      "firStep": 0,
+      "messageCount": 0,
+      "lastActiveTime": null,
+      "disguiseKeyword": null,
+      "trustedContacts": [],
+      "trustedContactNames": null,
+      "pincode": null,
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false
+    },
+    "whatsapp:+911111111111": {
+      "state": "FIR",
+      "lang": "en",
+      "userName": "Siddhi",
+      "userAddress": "Mumbai",
+      "firAnswers": [
+        "He pushed me"
+      ],
+      "firStep": 1,
+      "messageCount": 16,
+      "lastActiveTime": 1778592934934,
+      "disguiseKeyword": "aloo",
+      "trustedContacts": [
+        "9876543210",
+        "9123456780"
+      ],
+      "trustedContactNames": "Mom, Dad",
+      "pincode": "400001",
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false,
+      "emergencyStartTime": null,
+      "locationCaptured": false,
+      "locationCoords": null,
+      "trustedContactAlerted": false,
+      "contactAlertTime": null,
+      "checkInCount": 0,
+      "reAlerted": false,
+      "emergencyShelter": {
+        "name": "One Stop Centre - Mumbai City",
+        "address": "One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012",
+        "pincode": "400012",
+        "phone": "9653660408",
+        "district": "Mumbai City",
+        "state": "Maharashtra",
+        "lat": 19.054999,
+        "lng": 72.8692035
+      },
+      "allShelters": [
+        {
+          "name": "One Stop Centre - Mumbai City",
+          "address": "One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012",
+          "pincode": "400012",
+          "phone": "9653660408",
+          "district": "Mumbai City",
+          "state": "Maharashtra",
+          "lat": 19.054999,
+          "lng": 72.8692035
+        }
+      ],
+      "locationToken": null,
+      "emergencyEndTime": 1778592893626
+    },
+    "whatsapp:+910000000099": {
+      "state": "SUPPORT",
+      "lang": "hl",
+      "emergencyStartTime": null,
+      "locationCaptured": false,
+      "locationCoords": null,
+      "trustedContactAlerted": false,
+      "reAlerted": false,
+      "checkInCount": 0,
+      "trustedContacts": [
+        "+919876543210"
+      ],
+      "trustedContactNames": "Mumma",
+      "allShelters": [
+        {
+          "name": "One Stop Centre - Mumbai City",
+          "address": "One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012",
+          "district": "Mumbai City",
+          "state": "Maharashtra",
+          "pincode": "400012",
+          "phone": "9653660408",
+          "lat": 19.054999,
+          "lng": 72.8692035,
+          "distance": 2.47,
+          "mapsLink": "https://www.google.com/maps?q=19.054999,72.8692035"
+        },
+        {
+          "name": "One Stop Centre - Mumbai Suburban-II",
+          "address": "10 th floor, HBT Hospitral, jogeshwari (E) Mumbai-60",
+          "district": "Mumbai Suburban-II",
+          "state": "Maharashtra",
+          "pincode": "400060",
+          "phone": "7045394766",
+          "lat": 19.0559967,
+          "lng": 72.9226654,
+          "distance": 5.29,
+          "mapsLink": "https://www.google.com/maps?q=19.0559967,72.9226654"
+        },
+        {
+          "name": "One Stop Centre - Mumbai Suburban",
+          "address": "Female Beggers Home, 1st Fl.R.C. Marg, Opp. Jain Mandir, Chembur(E), Mumbai-400071",
+          "district": "Mumbai Suburban",
+          "state": "Maharashtra",
+          "pincode": "400071",
+          "phone": "9702962025",
+          "lat": 19.1309844,
+          "lng": 72.8894618,
+          "distance": 6.25,
+          "mapsLink": "https://www.google.com/maps?q=19.1309844,72.8894618"
+        }
+      ],
+      "emergencyShelter": null,
+      "locationToken": null,
+      "emergencyEndTime": 1778618116244,
+      "contactAlertTime": null
+    },
+    "whatsapp: 91TEST": {
+      "state": "DISGUISE",
+      "lang": "en",
+      "userName": "Siddji",
+      "userAddress": "B wing 503, Om Manusmriti CHS dongaripada bus stand GB road Thane (w)",
+      "firAnswers": [],
+      "firStep": 0,
+      "messageCount": 31,
+      "lastActiveTime": 1778620623447,
+      "disguiseKeyword": "K",
+      "trustedContacts": [
+        "6000926077"
+      ],
+      "trustedContactNames": "Siddhi",
+      "pincode": "400615",
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false,
+      "emergencyStartTime": null,
+      "locationCaptured": false,
+      "locationCoords": null,
+      "trustedContactAlerted": false,
+      "contactAlertTime": null,
+      "checkInCount": 0,
+      "reAlerted": false,
+      "emergencyShelter": null,
+      "allShelters": [],
+      "locationToken": null,
+      "emergencyEndTime": 1778620243172
+    }
+  }
 }
