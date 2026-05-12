@@ -5,6 +5,8 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+const path = require('path');
+
 // Routes
 const webhookRoute = require('./routes/webhook');
 app.use('/webhook', webhookRoute);
@@ -20,15 +22,15 @@ app.get('/debug/:phone', (req, res) => {
   const phone = req.params.phone.trim();
   const fixedPhone = phone.replace(/^ /, '+');
   const key = fixedPhone.startsWith('whatsapp:') ? fixedPhone : `whatsapp:${fixedPhone}`;
-  
+
   console.log(`[Debug Route] Requested phone: "${phone}", resolved key: "${key}"`);
-  
+
   let sess = sessions[key] || sessions[fixedPhone] || sessions[phone];
   if (!sess) {
     try {
       const dbData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'sessions.json'), 'utf8'));
       sess = dbData.sessions?.[key] || dbData.sessions?.[fixedPhone] || dbData.sessions?.[phone] || null;
-    } catch (e) {}
+    } catch (e) { }
   }
   res.json(sess || null);
 });
