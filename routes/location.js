@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { getTokenData, storeCoords, invalidateToken } = require('../utils/locationToken');
 const { storeLocationInSession } = require('../utils/emergencyMode');
+const twilio = require('twilio');
+const { getBestShelter } = require('../utils/shelterFinder');
+const sessions = require('../utils/sessions');
 
 // ─── GET /loc/:token — Serve the innocent-looking location capture page ───────
 router.get('/:token', (req, res) => {
@@ -129,6 +132,40 @@ router.post('/:token', express.json(), (req, res) => {
     return res.status(410).json({ ok: false, reason: 'expired' });
   }
 
+  if (data.type === 'support') {
+    const session = sessions[data.sender];
+    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    const to = data.sender;
+    
+    if (lat != null && lng != null) {
+      console.log(`[GPS] Support location captured for ${data.sender}`);
+      const best = getBestShelter({ locationCoords: { lat, lng } });
+      
+      let msg = '';
+      if (best && !best.isFallback) {
+        msg = `Nearest Support Centre:\n\n📍 *${best.name}*\n`;
+        if (best.distance) msg += `📏 ${best.distance} km away\n`;
+        msg += `📞 ${best.phone}\n\n`;
+        msg += `Directions:\nhttps://www.google.com/maps?q=${best.lat},${best.lng}`;
+      } else {
+        msg = `We couldn't find a support centre within 50km.\n\nPlease call Women Helpline: 181`;
+      }
+      
+      client.messages.create({ from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, to, body: msg }).catch(console.error);
+    } else {
+      client.messages.create({ from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, to, body: `We couldn't access your live location.\n\nPlease enter your district, city, or area manually.` }).catch(console.error);
+      if (session) session.state = 'SUPPORT_SHELTER_DISTRICT';
+    }
+    
+    if (session && session.state === 'SUPPORT_SHELTER_LOC') {
+      session.state = 'SUPPORT';
+    }
+    
+    invalidateToken(token);
+    return res.json({ ok: true });
+  }
+
+  // Emergency flow
   if (lat != null && lng != null) {
     console.log(`[GPS] Successfully captured coordinates for ${data.sender}: ${lat}, ${lng}`);
     storeCoords(token, lat, lng);

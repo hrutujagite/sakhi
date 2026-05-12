@@ -329,30 +329,12 @@ const handleMessage = async (req, res) => {
       return sendTwiML(res, responseText);
     }
 
-    // Option 2: Find Nearby Shelter
-    if (incomingMsg === '2') {
-      if (session.pincode) {
-        const shelterInfo = formatShelterResponse(session.pincode);
-        responseText = withHelpFooter(
-          shelterInfo + `\n\n` +
-          `💡 *Yaad rakhein:*\n` +
-          `• One Stop Centres 24/7 khule hain aur bilkul FREE hain\n` +
-          `• Medical help, police help, legal aid — sab ek jagah milega\n` +
-          `• Aap bina kisi documents ke bhi ja sakti hain\n\n` +
-          `Kisi aur pincode ke liye 6-digit code bhejein.`
-        );
-      } else {
-        responseText = withHelpFooter(
-          `🏠 *Nazdeeki Shelter Dhundhein*\n\n` +
-          `Apna *6-digit PINCODE* bhejein (jaise: 400001)\n\n` +
-          `💡 *Aapko kya milega shelter mein:*\n` +
-          `• Surakshit rehne ki jagah (aap aur bachche)\n` +
-          `• Free khana, medical help, counseling\n` +
-          `• Legal aid aur police se madad\n` +
-          `• Koi documents zaroori nahi\n\n` +
-          `📞 Seedha call karein: *181* (Women Helpline) — woh bhi shelter dhundh denge.`
-        );
-      }
+    // ── MENU OPTION 2: FIND SHELTER ────────────────────────────────────────────────
+    if (incomingMsg === '2' || lower.includes('shelter')) {
+      session.state = 'SUPPORT_SHELTER_MENU';
+      responseText = withHelpFooter(
+        `📍 For the most accurate nearby support centres, you can securely share your live location.\n\nReply:\n1️⃣ Share Live Location\n2️⃣ Enter District/Area Manually`
+      );
       return sendTwiML(res, responseText);
     }
 
@@ -398,6 +380,47 @@ const handleMessage = async (req, res) => {
       );
       return sendTwiML(res, responseText);
     }
+  }
+
+  // ── SHELTER MENU HANDLING ─────────────────────────────────────────────────────
+  if (session.state === 'SUPPORT_SHELTER_MENU') {
+    if (incomingMsg === '1') {
+      session.state = 'SUPPORT_SHELTER_LOC';
+      const token = generateToken(sender, 'support');
+      const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
+      responseText = withHelpFooter(
+        `To improve nearby support recommendations, tap below:\n\n${BASE_URL}/loc/${token}`
+      );
+      return sendTwiML(res, responseText);
+    } else if (incomingMsg === '2') {
+      session.state = 'SUPPORT_SHELTER_DISTRICT';
+      responseText = withHelpFooter(`Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)`);
+      return sendTwiML(res, responseText);
+    } else {
+      responseText = withHelpFooter(`Please reply with 1 or 2.`);
+      return sendTwiML(res, responseText);
+    }
+  }
+
+  // ── SHELTER DISTRICT HANDLING ─────────────────────────────────────────────────
+  if (session.state === 'SUPPORT_SHELTER_DISTRICT') {
+    session.district = incomingMsg;
+    // Assume state is Maharashtra for now since all current data is MH
+    session.geoState = 'Maharashtra'; 
+    const shelter = getBestShelter(session);
+    
+    // Reset state
+    session.state = 'SUPPORT';
+    
+    let msg = '';
+    if (shelter && !shelter.isFallback) {
+      msg = `Nearest Support Centre:\n\n📍 *${shelter.name}*\n📞 ${shelter.phone}\n\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
+    } else {
+      msg = `We couldn't find a support centre for ${incomingMsg}.\n\nPlease call Women Helpline: 181`;
+    }
+    
+    responseText = withHelpFooter(msg);
+    return sendTwiML(res, responseText);
   }
 
   // ── LEGAL RIGHTS SUB-MENU ──────────────────────────────────────────────────
