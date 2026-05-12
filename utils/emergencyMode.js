@@ -20,7 +20,7 @@ const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(
 const DISTRESS_KEYWORDS = {
   en: ['help', 'danger', 'i am in danger', 'i need help', 'save me', 'please help', 'emergency', 'he is hitting me', 'hurting me'],
   hi: ['bachao', 'mujhe bachao', 'madad karo', 'mujhe madad chahiye', 'dar lag raha hai', 'khatara', 'maar raha hai', 'maro mat'],
-  hl: ['bachao', 'mujhe bachao', 'madad karo', 'mujhe madad chahiye', 'dar lag raha hai', 'khatara', 'help karo', 'please help'],
+  hl: ['bachao', 'mujhe bachao', 'madad karo', 'mujhe madad chahiye', 'dar lag raha hai', 'khatara', 'help karo', 'please help', 'maar raha hai', 'maro mat', 'maarta hai', 'marti hai', 'peet raha hai', 'dara raha hai', 'dhakka diya', 'chot lagi', 'khoon', 'rone de nahi'],
   mr: ['vaachava', 'mala madad kara', 'dhoka', 'bhiti', 'aata vaachava', 'maartoy'],
   te: ['sahayam', 'naaku sahayam kavali', 'help cheyyi', 'naaku bhayam'],
   ta: ['udavi', 'ennai kapattu', 'bayam', 'kapattu'],
@@ -64,10 +64,10 @@ const TEMPLATES = {
   },
   // Location link instruction
   locationInstruction: {
-    en: '🔗 *Tap to send location:*',
-    hl: '🔗 *Location bhejనే ke liye tap karein:*',
-    hi: '🔗 *लोकेशन भेजने के लिए दबाएं:*',
-    mr: '🔗 *लोकेशन पाठवण्यासाठी दाबा:*',
+    en: '📍 *To share your location:* Tap the 📎 or + icon below, tap "Location", and send your current location.',
+    hl: '📍 *Location share karne ke liye:* Niche 📎 ya + icon dabayein, "Location" chunein aur bhej dein.',
+    hi: '📍 *लोकेशन भेजने के लिए:* नीचे 📎 या + आइकन दबाएं, "Location" चुनें और भेजें।',
+    mr: '📍 *लोकेशन पाठवण्यासाठी:* खाली 📎 किंवा + आयकॉन दाबा, "Location" निवडा आणि पाठवा.',
   },
   // Quick reply options
   options: {
@@ -144,6 +144,42 @@ const TEMPLATES = {
       '181 | 112',
     ].join('\n'),
   },
+  contactAlert: {
+    en: (loc, time) => `⚠️ URGENT: Someone who trusts you needs your help RIGHT NOW.\n\n${loc}\n\nTime: ${time} IST\n\nPlease go to her immediately or call 181 if she does not respond.\n\n— Sakhi Safety App`,
+    hl: (loc, time) => `⚠️ URGENT: Kisi ne aapko madad ke liye bulaya hai.\n\n${loc}\n\nSamay: ${time} IST\n\nKripya turant uske paas jayein ya agar wo jawab na de toh 181 par call karein.\n\n— Sakhi Safety App`,
+    hi: (loc, time) => `⚠️ आवश्यक: किसी ने आपको मदद के लिए बुलाया है।\n\n${loc}\n\nसमय: ${time} IST\n\nकृपया तुरंत उनके पास जाएं या अगर वो जवाब न दें तो 181 पर कॉल करें।\n\n— Sakhi Safety App`,
+    mr: (loc, time) => `⚠️ अत्यंत महत्त्वाची सूचना: एका व्यक्तीने तुम्हाला मदतीसाठी बोलावले आहे.\n\n${loc}\n\nवेळ: ${time} IST\n\nकृपया त्वरित तिच्याकडे जा किंवा तिने उत्तर न दिल्यास 181 वर कॉल करा.\n\n— Sakhi Safety App`,
+  },
+  locShared: {
+    en: (link) => `📍 Her location: ${link}`,
+    hl: (link) => `📍 Uski location: ${link}`,
+    hi: (link) => `📍 उनकी लोकेशन: ${link}`,
+    mr: (link) => `📍 तिची लोकेशन: ${link}`
+  },
+  locArea: {
+    en: (area) => `📍 Her area: ${area}`,
+    hl: (area) => `📍 Uska area: ${area}`,
+    hi: (area) => `📍 उनका क्षेत्र: ${area}`,
+    mr: (area) => `📍 तिचा भाग: ${area}`
+  },
+  locNone: {
+    en: '📍 Location not yet shared — please call her directly.',
+    hl: '📍 Location abhi share nahi hui — kripya use direct call karein.',
+    hi: '📍 लोकेशन अभी साझा नहीं की गई है — कृपया उन्हें सीधे कॉल करें।',
+    mr: '📍 लोकेशन अद्याप शेअर केलेली नाही — कृपया तिला थेट कॉल करा.'
+  },
+  alertSuccess: {
+    en: '✅ Alert sent to your contacts.\n\nThey know you need help. You are not alone. 🌸\n\nPolice: 112 | Helpline: 181',
+    hl: '✅ Aapke contacts ko alert bhej diya gaya hai.\n\nWo jante hain ki aapko madad chahiye. Aap akeli nahi hain. 🌸\n\nPolice: 112 | Helpline: 181',
+    hi: '✅ आपके संपर्कों को अलर्ट भेज दिया गया है।\n\nवे जानते हैं कि आपको मदद चाहिए। आप अकेली नहीं हैं। 🌸\n\nपुलिस: 112 | हेल्पलाइन: 181',
+    mr: '✅ तुमच्या संपर्कांना अलर्ट पाठवला आहे.\n\nत्यांना माहित आहे की तुम्हाला मदतीची गरज आहे. तुम्ही एकटे नाहीत. 🌸\n\nपोलीस: 112 | हेल्पलाइन: 181'
+  },
+  alertFail: {
+    en: 'I tried but could not send the alerts. Please call them directly or dial 181. You are not alone. 🌸',
+    hl: 'Main alert nahi bhej payi. Kripya unhe direct call karein ya 181 dabayein. Aap akeli nahi hain. 🌸',
+    hi: 'मैं अलर्ट नहीं भेज पाई। कृपया उन्हें सीधे कॉल करें या 181 डायल करें। आप अकेली नहीं हैं। 🌸',
+    mr: 'मी अलर्ट पाठवू शकले नाही. कृपया त्यांना थेट कॉल करा किंवा 181 डायल करा. तुम्ही एकटे नाहीत. 🌸'
+  }
 };
 
 // Helper — pick the right language, fallback to English
@@ -158,9 +194,9 @@ const getMapsLink = (shelter) => {
 };
 
 const DISGUISE_MSGS = [
-  '🌿 Here is a healthy recipe idea for today: Moong Dal Khichdi — light, nutritious, and ready in 20 minutes.',
-  '🍵 Wellness tip: Start your morning with warm turmeric milk. Simple and soothing.',
-  '🥗 Today\'s healthy meal: Sprout salad with lemon and a pinch of chaat masala!',
+  '🌿 Here is a healthy recipe idea for today: Moong Dal Khichdi.\n\nIngredients:\n- 1/2 cup rice\n- 1/2 cup yellow moong dal\n- 1 tsp ghee\n- A pinch of turmeric\n- Salt to taste\n\nInstructions:\n1. Wash dal and rice.\n2. Heat ghee in cooker, add cumin seeds.\n3. Add dal, rice, turmeric, and water.\n4. Cook for 3 whistles.\n\nEnjoy this light, nutritious meal ready in 20 minutes!',
+  '🍵 Wellness tip: Start your morning with warm turmeric milk.\n\nIt helps boost immunity and is very soothing.\n\nSteps:\n1. Boil 1 glass of milk.\n2. Add 1/2 tsp turmeric powder.\n3. Add a pinch of black pepper.\n4. Sweeten with jaggery.\n\nDrink it warm before bed for a good night\'s sleep.',
+  '🥗 Today\'s healthy meal: Sprout salad with lemon and a pinch of chaat masala!\n\nIngredients:\n- 1 cup mixed sprouts\n- 1 chopped onion\n- 1 chopped tomato\n- 1 green chilli\n- Coriander leaves\n- Lemon juice\n\nMix everything well and serve fresh. It is packed with protein!',
 ];
 
 // ─── TWILIO OUTBOUND ──────────────────────────────────────────────────────────
@@ -308,9 +344,7 @@ const buildEmergencyMsg = (session, locationLink) => {
   }
   msg += '\n';
 
-  if (locationLink) {
-    msg += `${t('locationInstruction', lang)}\n${locationLink}\n\n`;
-  }
+  msg += `${t('locationInstruction', lang)}\n\n`;
 
   msg += t('options', lang) + '\n\n';
   msg += t('eraseHint', lang);
@@ -359,6 +393,7 @@ const activateEmergency = async (sender, session) => {
 // ─── QUICK REPLY HANDLERS ─────────────────────────────────────────────────────
 
 const handleAlertContact = async (sender, session) => {
+  const lang = session.lang || 'en';
   const contacts = session.trustedContacts || [];
   if (contacts.length === 0) {
     return 'I could not find your trusted contacts. Please call 181 directly — they will help you right now. 🌸';
@@ -367,11 +402,12 @@ const handleAlertContact = async (sender, session) => {
   let locationText = '';
   if (session.locationCoords) {
     const { lat, lng } = session.locationCoords;
-    locationText = `📍 Her location: https://maps.google.com/?q=${lat},${lng}`;
+    const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+    locationText = TEMPLATES.locShared[lang] ? TEMPLATES.locShared[lang](mapsLink) : TEMPLATES.locShared.en(mapsLink);
   } else if (session.savedArea) {
-    locationText = `📍 Her area: ${session.savedArea}`;
+    locationText = TEMPLATES.locArea[lang] ? TEMPLATES.locArea[lang](session.savedArea) : TEMPLATES.locArea.en(session.savedArea);
   } else {
-    locationText = '📍 Location not yet shared — please call her directly.';
+    locationText = TEMPLATES.locNone[lang] || TEMPLATES.locNone.en;
   }
 
   const now = new Date().toLocaleTimeString('en-IN', {
@@ -380,11 +416,7 @@ const handleAlertContact = async (sender, session) => {
 
   let successCount = 0;
   for (const contact of contacts) {
-    const contactMsg =
-      `⚠️ URGENT: Someone who trusts you needs your help RIGHT NOW.\n\n` +
-      `${locationText}\n\nTime: ${now} IST\n\n` +
-      `Please go to her immediately or call 181 if she does not respond.\n\n` +
-      `— Sakhi Safety App`;
+    const contactMsg = TEMPLATES.contactAlert[lang] ? TEMPLATES.contactAlert[lang](locationText, now) : TEMPLATES.contactAlert.en(locationText, now);
 
     try {
       await sendMsg(`whatsapp:${contact}`, contactMsg);
@@ -397,9 +429,9 @@ const handleAlertContact = async (sender, session) => {
   if (successCount > 0) {
     session.trustedContactAlerted = true;
     session.contactAlertTime = Date.now();
-    return `✅ Alert sent to your contacts.\n\nThey know you need help. You are not alone. 🌸\n\nPolice: 112 | Helpline: 181`;
+    return TEMPLATES.alertSuccess[lang] || TEMPLATES.alertSuccess.en;
   } else {
-    return `I tried but could not send the alerts. Please call them directly or dial 181. You are not alone. 🌸`;
+    return TEMPLATES.alertFail[lang] || TEMPLATES.alertFail.en;
   }
 };
 
@@ -441,7 +473,7 @@ const handleSafeNow = (sender, session) => {
 
 // ─── DISGUISE ACTIVATION ──────────────────────────────────────────────────────
 
-const activateDisguise = (sender, session) => {
+const activateDisguise = async (sender, session) => {
   clearCheckInTimers(sender);
   clearConfirmTimers(sender);
   if (session.locationToken) invalidateToken(session.locationToken);
@@ -453,7 +485,12 @@ const activateDisguise = (sender, session) => {
     checkInCount: 0, reAlerted: false,
   });
 
-  return DISGUISE_MSGS[Math.floor(Math.random() * DISGUISE_MSGS.length)];
+  // Send the first two disguise messages directly to forcefully scroll the chat up
+  await sendMsg(sender, DISGUISE_MSGS[0]);
+  await sendMsg(sender, DISGUISE_MSGS[1]);
+
+  // Return the third to be sent by the standard TwiML response
+  return DISGUISE_MSGS[2];
 };
 
 // ─── LOCATION COORDS UPDATE (called from location route) ─────────────────────

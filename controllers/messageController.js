@@ -15,6 +15,7 @@ const {
   handleMoreShelters,
   handleSafeNow,
   buildEmergencyMsg,
+  storeLocationInSession,
 } = require('../utils/emergencyMode');
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -97,9 +98,18 @@ const handleMessage = async (req, res) => {
     return sendTwiML(res, '⚙️ Developer: Session wiped. Send "hi" to restart onboarding.');
   }
 
+  // Intercept native WhatsApp location pins instantly
+  if (req.body.Latitude && req.body.Longitude) {
+    if (sessions[sender]) {
+      storeLocationInSession(sender, req.body.Latitude, req.body.Longitude);
+      return sendTwiML(res, '📍 Location received. Reply "1" to send this to your emergency contacts.');
+    }
+  }
+
   if (!sessions[sender]) {
     sessions[sender] = {
-      state: 'ONBOARDING_CONTACT_PHONE', history: [], lang: 'hl',
+      state: 'ONBOARDING_USER_NAME', history: [], lang: 'hl',
+      userName: null, userAddress: null,
       firAnswers: [], firStep: 0,
       messageCount: 0, lastActiveTime: null,
       disguiseKeyword: null,
@@ -110,7 +120,7 @@ const handleMessage = async (req, res) => {
       savedArea: null,
       policeAlertPreference: false,
     };
-    return sendTwiML(res, `Namaste! 🌸 I am Sakhi. Before we start, I need to know a few things to keep you safe.\n\nPlease reply with the phone number(s) of people you trust. Start with +91 (e.g. +919876543210). You can send multiple numbers separated by commas.`);
+    return sendTwiML(res, `Namaste! 🌸 I am Sakhi. Before we start, I need to know a few things to keep you safe.\n\nFirst, what is your name?`);
   }
 
   const session = sessions[sender];
@@ -122,6 +132,16 @@ const handleMessage = async (req, res) => {
 
   // ── ONBOARDING FLOW ──────────────────────────────────────────────────────────
   if (session.state.startsWith('ONBOARDING_')) {
+    if (session.state === 'ONBOARDING_USER_NAME') {
+      session.userName = incomingMsg;
+      session.state = 'ONBOARDING_USER_ADDRESS';
+      return sendTwiML(res, `Nice to meet you, ${session.userName}. What is your home address?`);
+    }
+    if (session.state === 'ONBOARDING_USER_ADDRESS') {
+      session.userAddress = incomingMsg;
+      session.state = 'ONBOARDING_CONTACT_PHONE';
+      return sendTwiML(res, `Got it. Now, please reply with the phone number(s) of people you trust. Start with +91 (e.g. +919876543210). You can send multiple numbers separated by commas.`);
+    }
     if (session.state === 'ONBOARDING_CONTACT_PHONE') {
       session.trustedContacts = incomingMsg.split(',').map(p => p.replace(/[^0-9+]/g, '')).filter(p => p);
       session.state = 'ONBOARDING_CONTACT_NAME';
@@ -164,13 +184,13 @@ const handleMessage = async (req, res) => {
       console.error('[Emergency] Silent activation error:', err.message)
     );
     // Send innocent reply to screen
-    responseText = activateDisguise(sender, session);
+    responseText = await activateDisguise(sender, session);
     return sendTwiML(res, responseText);
   }
 
   // ── PRIORITY 2: ERASE — disguise mode ────────────────────────────────────────
   if (lower === 'erase') {
-    responseText = activateDisguise(sender, session);
+    responseText = await activateDisguise(sender, session);
     return sendTwiML(res, responseText);
   }
 
@@ -270,11 +290,8 @@ const handleMessage = async (req, res) => {
   if (session.state === 'TRIAGE') {
     const yesMatch = incomingMsg === '1' || /\b(yes|haan|ha)\b/.test(lower);
     if (yesMatch) {
-      session.state = 'EMERGENCY_CONFIRM';
-      startConfirmTimers(sender);
-      responseText =
-        `I am right here with you. Do you need emergency help right now? 🌸\n\n` +
-        `1️⃣ Yes — help me now\n2️⃣ No — I am okay`;
+      clearConfirmTimers(sender);
+      responseText = await activateEmergency(sender, session);
     } else {
       session.state = 'SUPPORT';
       responseText = withHelpFooter(

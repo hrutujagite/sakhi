@@ -1,3 +1,5 @@
 node_modules/
 .env
 *.log
+local-test.js
+test-suites-4678.js
