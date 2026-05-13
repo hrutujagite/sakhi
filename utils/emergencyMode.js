@@ -13,6 +13,8 @@ const FALLBACKS = {
   emergency: '112',
 };
 
+console.log('[DEBUG] emergencyMode.js loaded with External Link update.');
+
 const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
 
 // ─── DISTRESS KEYWORDS ────────────────────────────────────────────────────────
@@ -64,10 +66,10 @@ const TEMPLATES = {
   },
   // Location link instruction
   locationInstruction: {
-    en: '📍 *To share your location:* Tap the 📎 or + icon below, tap "Location", and send your current location.',
-    hl: '📍 *Location share karne ke liye:* Niche 📎 ya + icon dabayein, "Location" chunein aur bhej dein.',
-    hi: '📍 *लोकेशन भेजने के लिए:* नीचे 📎 या + आइकन दबाएं, "Location" चुनें और भेजें।',
-    mr: '📍 *लोकेशन पाठवण्यासाठी:* खाली 📎 किंवा + आयकॉन दाबा, "Location" निवडा आणि पाठवा.',
+    en: (link) => `📍 *To find nearest centers:* Tap below to share your location safely:\n${link}`,
+    hl: (link) => `📍 *Nearest center dhoondne ke liye:* Neeche link par click karke apni location share karein:\n${link}`,
+    hi: (link) => `📍 *नजदीकी केंद्र खोजने के लिए:* नीचे दिए गए लिंक पर क्लिक करके अपनी लोकेशन शेयर करें:\n${link}`,
+    mr: (link) => `📍 *जवळचे केंद्र शोधण्यासाठी:* खालील लिंकवर क्लिक करून तुमची लोकेशन शेअर करा:\n${link}`,
   },
   // Quick reply options
   options: {
@@ -350,7 +352,7 @@ const buildEmergencyMsg = (session, locationLink) => {
     // Pre-computed shelters from activation time
     msg += formatNearestSheltersResponse(session.allShelters) + '\n\n';
   } else {
-    // No GPS available — prompt user to share location
+    // No GPS available — prompt user to share location via link
     msg += t('shelterFallback', lang) + '\n\n';
   }
 
@@ -359,7 +361,8 @@ const buildEmergencyMsg = (session, locationLink) => {
   msg += `• ${FALLBACKS.womenPoliceCell}\n`;
   msg += `• ${FALLBACKS.emergency}\n\n`;
 
-  msg += `${t('locationInstruction', lang)}\n\n`;
+  // Use the external link format for location
+  msg += `${t('locationInstruction', lang)(locationLink)}\n\n`;
 
   msg += t('options', lang) + '\n\n';
   msg += t('eraseHint', lang);
@@ -407,7 +410,7 @@ const activateEmergency = async (sender, session) => {
 
   // Step 4 — return emergency message to be sent instantly
   const msg = buildEmergencyMsg(session, locationLink);
-  
+
   // Start check-in timers
   startCheckInTimers(sender);
   return msg;
