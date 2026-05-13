@@ -1,7 +1,7 @@
 'use strict';
 
 const twilio = require('twilio');
-const { getBestShelter } = require('./shelterFinder');
+const { findNearestShelters, formatNearestSheltersResponse } = require('./shelterFinder');
 const { generateToken, getTokenData, invalidateToken } = require('./locationToken');
 const sessions = require('./sessions');
 
@@ -196,7 +196,7 @@ const getMapsLink = (shelter) => {
 
 const DISGUISE_MSGS = [
   '🌿 Here is a healthy recipe idea for today: Moong Dal Khichdi.\n\nIngredients:\n- 1/2 cup rice\n- 1/2 cup yellow moong dal\n- 1 tsp ghee\n- A pinch of turmeric\n- Salt to taste\n\nInstructions:\n1. Wash dal and rice.\n2. Heat ghee in cooker, add cumin seeds.\n3. Add dal, rice, turmeric, and water.\n4. Cook for 3 whistles.\n\nEnjoy this light, nutritious meal ready in 20 minutes!',
-  '🍵 Wellness tip: Start your morning with warm turmeric milk.\n\nIt helps boost immunity and is very soothing.\n\nSteps:\n1. Boil 1 glass of milk.\n2. Add 1/2 tsp turmeric powder.\n3. Add a pinch of black pepper.\n4. Sweeten with jaggery.\n\nDrink it warm before bed for a good night\'s sleep.',
+  '🍵 Wellness tip: Start your morning with warm turmeric milk.\n\nIt supports immunity and keeps you calm.\n\nSteps:\n1. Boil 1 glass of milk.\n2. Add 1/2 tsp turmeric powder.\n3. Add a pinch of black pepper.\n4. Sweeten with jaggery.\n\nDrink it warm before bed for a good night\'s sleep.',
   '🥗 Today\'s healthy meal: Sprout salad with lemon and a pinch of chaat masala!\n\nIngredients:\n- 1 cup mixed sprouts\n- 1 chopped onion\n- 1 chopped tomato\n- 1 green chilli\n- Coriander leaves\n- Lemon juice\n\nMix everything well and serve fresh. It is packed with protein!',
 ];
 
@@ -204,12 +204,16 @@ const DISGUISE_MSGS = [
 
 const sendMsg = async (to, body) => {
   try {
-    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-    await client.messages.create({
-      from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-      to,
-      body,
-    });
+    if (process.env.NODE_ENV !== "development") {
+      const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+      await client.messages.create({
+        from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
+        to,
+        body,
+      });
+    } else {
+      console.log(`[DevMode: Simulated Send to ${to}]:\n${body}`);
+    }
   } catch (err) {
     console.error('[Emergency] Outbound failed to', to, ':', err.message);
   }
@@ -313,30 +317,30 @@ const startConfirmTimers = (sender) => {
 // (Removed lookupShelters since we use getBestShelter directly)
 
 // ─── BUILD INITIAL EMERGENCY MESSAGE ─────────────────────────────────────────
+// TASK 3: Shows top 3 GPS-nearest shelters. TASK 2: GPS-only, no fallbacks.
 
 const buildEmergencyMsg = (session, locationLink) => {
   const lang = session.lang || 'en';
 
   let msg = t('opening', lang) + '\n\n';
 
-  const shelter = session.emergencyShelter;
-  if (shelter) {
-    const mapsLink = getMapsLink(shelter);
-    msg += `${t('shelterLabel', lang)}\n🏠 ${shelter.name}\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n📞 ${shelter.phone}\n`;
-    if (shelter.distance) msg += `📏 ${shelter.distance} km away\n`;
-    msg += `🗺️ ${mapsLink}\n\n`;
+  // Show top 3 shelters if GPS coords are available
+  const coords = session.locationCoords;
+  if (coords && coords.lat != null && coords.lng != null) {
+    const nearest = findNearestShelters(coords.lat, coords.lng, 3);
+    msg += formatNearestSheltersResponse(nearest) + '\n\n';
+  } else if (session.allShelters && session.allShelters.length > 0) {
+    // Pre-computed shelters from activation time
+    msg += formatNearestSheltersResponse(session.allShelters) + '\n\n';
   } else {
+    // No GPS available — prompt user to share location
     msg += t('shelterFallback', lang) + '\n\n';
   }
 
   msg += `${t('contactsLabel', lang)}\n`;
   msg += `• ${FALLBACKS.womenHelpline}\n`;
   msg += `• ${FALLBACKS.womenPoliceCell}\n`;
-  msg += `• ${FALLBACKS.emergency}\n`;
-  if (session.policeAlertPreference) {
-    msg += `• 1091\n`;
-  }
-  msg += '\n';
+  msg += `• ${FALLBACKS.emergency}\n\n`;
 
   msg += `${t('locationInstruction', lang)}\n\n`;
 
@@ -361,11 +365,14 @@ const activateEmergency = async (sender, session) => {
   session.checkInCount = 0;
   session.reAlerted = false;
 
-  // Step 2 — shelter lookup with fallback
-  const shelter = getBestShelter(session);
-  if (shelter && !shelter.isFallback) {
-    session.emergencyShelter = shelter;
-    session.allShelters = [shelter];
+  // Step 2 — GPS-only shelter lookup (TASK 2: no pincode/district/state fallback)
+  // allShelters stores top 3 nearest; emergencyShelter stores the closest one.
+  // If no GPS coords yet, allShelters stays empty — user is prompted to share location.
+  const coords = session.locationCoords;
+  if (coords && coords.lat != null && coords.lng != null) {
+    const nearest = findNearestShelters(coords.lat, coords.lng, 3);
+    session.allShelters = nearest;
+    session.emergencyShelter = nearest.length > 0 ? nearest[0] : null;
   } else {
     session.emergencyShelter = null;
     session.allShelters = [];
@@ -434,27 +441,19 @@ const handleAlertContact = async (sender, session) => {
   }
 };
 
+// TASK 3: Uses shared multi-shelter formatter (GPS-only, top 3, sorted by distance)
 const handleMoreShelters = (session) => {
-  const shelters = session.allShelters || [];
-  if (!shelters.length) {
-    return (
-      `🏠 Shelters near you:\n\nPlease call Women Helpline 181 for the nearest shelter.\n` +
-      `They are free, 24/7, and completely confidential.\n\nHelpline: 181 | Police: 112`
-    );
+  if (!session.locationCoords || session.locationCoords.lat == null) {
+    return `📍 *Location needed.*\n\nPlease share your *Live Location* first to see nearby support centres. You can tap the 📎 or + icon below, tap "Location", and send your current location.`;
   }
-  let msg = '🏠 *All shelters near you:*\n\n';
-  shelters.forEach((s, i) => {
-    const mapsLink = getMapsLink(s);
-    msg += `${i + 1}. *${s.name}*\n   📍 ${s.address}\n   📞 ${s.phone}\n   🗺️ ${mapsLink}\n\n`;
-  });
-  msg += `All One Stop Centres are FREE and available 24/7.\nHelpline: 181 | Police: 112`;
-  return msg;
+  const shelterList = session.allShelters || [];
+  return formatNearestSheltersResponse(shelterList);
 };
 
 const handleSafeNow = (sender, session) => {
   clearCheckInTimers(sender);
   session.emergencyEndTime = Date.now();
-  session.state = 'SUPPORT';
+  session.state = 'TRIAGE';
   // Wipe emergency-specific fields
   Object.assign(session, {
     emergencyStartTime: null, locationToken: null, locationCoords: null,
@@ -465,31 +464,44 @@ const handleSafeNow = (sender, session) => {
 
   return (
     'I am so relieved you are safe. 🌸\n\n' +
-    'I am still here with you whenever you need me.\n\n' +
-    'Would you like to switch to private mode? Type *Erase* at any time to turn Sakhi into a cooking app.'
+    'Do you need any more help right now?\n\n' +
+    '1️⃣ Yes — help me now\n' +
+    '2️⃣ No — I am okay'
   );
 };
 
-// ─── DISGUISE ACTIVATION ──────────────────────────────────────────────────────
+// ─── SILENT SOS / STEALTH MODE ACTIVATION (TASK 7) ───────────────────────────
+// SUPPRESSED WORDS — must NEVER appear in any visible WhatsApp message while
+// session.state === 'DISGUISE':
+//   emergency, shelter, alert, danger, unsafe, SOS, help
+// All emergency logic runs silently in the backend only.
 
 const activateDisguise = async (sender, session) => {
+  console.log(`[STEALTH SOS ACTIVATED] Sender: ${sender} | Time: ${new Date().toISOString()}`);
   clearCheckInTimers(sender);
   clearConfirmTimers(sender);
-  if (session.locationToken) invalidateToken(session.locationToken);
+  const prevToken = session.locationToken;
+  if (prevToken) invalidateToken(prevToken);
 
+  // Set DISGUISE state BEFORE sending messages
   Object.assign(session, {
     state: 'DISGUISE',
-    emergencyStartTime: null, locationToken: null, locationCoords: null,
-    locationCaptured: false, trustedContactAlerted: false, contactAlertTime: null,
-    checkInCount: 0, reAlerted: false,
+    emergencyStartTime: null,
+    locationToken: null,
+    locationCoords: null,
+    locationCaptured: false,
+    trustedContactAlerted: false,
+    contactAlertTime: null,
+    checkInCount: 0,
+    reAlerted: false,
   });
 
-  // Send the first two disguise messages directly to forcefully scroll the chat up
-  await sendMsg(sender, DISGUISE_MSGS[0]);
-  await sendMsg(sender, DISGUISE_MSGS[1]);
+  // Flood chat with innocent cooking messages in background (don't await)
+  sendMsg(sender, DISGUISE_MSGS[1]).catch(err => console.error('[Disguise] bg msg 1 fail:', err.message));
+  sendMsg(sender, DISGUISE_MSGS[2]).catch(err => console.error('[Disguise] bg msg 2 fail:', err.message));
 
-  // Return the third to be sent by the standard TwiML response
-  return DISGUISE_MSGS[2];
+  // Return first message for immediate TwiML response
+  return DISGUISE_MSGS[0];
 };
 
 // ─── LOCATION COORDS UPDATE (called from location route) ─────────────────────
@@ -516,4 +528,6 @@ module.exports = {
   storeLocationInSession,
   FALLBACKS,
   buildEmergencyMsg,
+  DISGUISE_MSGS,
+  generateToken,
 };

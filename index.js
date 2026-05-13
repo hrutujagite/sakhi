@@ -15,8 +15,24 @@ app.use('/webhook', webhookRoute);
 const locationRoute = require('./routes/location');
 app.use('/loc', locationRoute);
 
-// Serve test results as static files
-app.use('/test-results', express.static(path.join(__dirname, 'test-results')));
+const sessions = require('./utils/sessions');
+const fs = require('fs');
+app.get('/debug/:phone', (req, res) => {
+  const phone = req.params.phone.trim();
+  const fixedPhone = phone.replace(/^ /, '+');
+  const key = fixedPhone.startsWith('whatsapp:') ? fixedPhone : `whatsapp:${fixedPhone}`;
+
+  console.log(`[Debug Route] Requested phone: "${phone}", resolved key: "${key}"`);
+
+  let sess = sessions[key] || sessions[fixedPhone] || sessions[phone];
+  if (!sess) {
+    try {
+      const dbData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'sessions.json'), 'utf8'));
+      sess = dbData.sessions?.[key] || dbData.sessions?.[fixedPhone] || dbData.sessions?.[phone] || null;
+    } catch (e) { }
+  }
+  res.json(sess || null);
+});
 
 // Health check
 app.get('/', (req, res) => {

@@ -1,6 +1,14 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
+<<<<<<< HEAD
 const { formatShelterResponse, getBestShelter } = require('../utils/shelterFinder');
+=======
+const {
+  findNearestShelters,
+  formatNearestSheltersResponse,
+  getBestShelter
+} = require('../utils/shelterFinder');
+>>>>>>> e2a7bc4c2728d07efbfa912c5ce5c029eaf2e925
 const sessions = require('../utils/sessions');
 const {
   isDistress,
@@ -15,6 +23,8 @@ const {
   handleMoreShelters,
   handleSafeNow,
   buildEmergencyMsg,
+  DISGUISE_MSGS,
+  generateToken,
 } = require('../utils/emergencyMode');
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -28,7 +38,7 @@ const isFIRTrigger = (msg) => {
   const triggers = ['fir', 'complaint', 'police', 'report', 'case'];
   const hindiTriggers = ['\u0936\u093f\u0915\u093e\u092f\u0924', '\u0924\u0915\u094d\u0930\u093e\u0930', '\u0926\u0930\u094d\u091c'];
   return triggers.some(t => msg?.toLowerCase().includes(t)) ||
-         hindiTriggers.some(t => msg?.includes(t));
+    hindiTriggers.some(t => msg?.includes(t));
 };
 
 const HELP_TRIGGERS = ['help', 'madad', 'bachao', 'helpme', 'help me', 'danger',
@@ -90,6 +100,7 @@ const handleMessage = async (req, res) => {
   const sender = req.body.From;
 
   console.log(`[${new Date().toISOString()}] From ${sender}: ${incomingMsg}`);
+  console.log(req.body);
 
   // Hidden developer command to wipe the session and start from scratch
   if (incomingMsg && incomingMsg.trim().toUpperCase() === 'RESET SESSION') {
@@ -114,6 +125,7 @@ const handleMessage = async (req, res) => {
   }
 
   const session = sessions[sender];
+  console.log(session);
   let responseText = '';
 
   // Track message count and last active time for distress context check
@@ -142,11 +154,46 @@ const handleMessage = async (req, res) => {
       if (pin) {
         session.pincode = pin;
       } else {
-        session.savedArea = incomingMsg; // Fallback if no valid pin found
+        session.savedArea = incomingMsg;
       }
-      session.state = 'SUPPORT';
-      return sendTwiML(res, `Thank you! Setup is complete. 🌸\n\nHow can I help you today?\n1️⃣ Know my legal rights\n2️⃣ Find a nearby shelter\n3️⃣ Prepare an FIR\n4️⃣ Just talk`);
+      // TASK 1: Immediate safety triage before entering SUPPORT
+      session.state = 'POST_ONBOARDING_TRIAGE';
+      return sendTwiML(res,
+        `Thank you! Setup is complete. 🌸\n\n` +
+        `📝 *Quick Guide:*\n` +
+        `• Type *"${session.disguiseKeyword}"* to hide this chat immediately (Disguise Mode).\n` +
+        `• Type *SAKHI* or *EXIT* while in Disguise Mode to come back to me.\n` +
+        `• Type *HELP* anytime if you need emergency assistance.\n\n` +
+        `Before we continue —\n` +
+        `*Are you in danger right now?*\n\n` +
+        `1️⃣ Yes — I need help now\n` +
+        `2️⃣ No — I am safe`
+      );
     }
+  }
+
+  // ── POST_ONBOARDING_TRIAGE ────────────────────────────────────────────────────
+  // TASK 1: Safety check after onboarding. Routes to emergency or support menu.
+  const lower = incomingMsg?.toLowerCase().trim() || '';
+  if (session.state === 'POST_ONBOARDING_TRIAGE') {
+    const yesMatch = incomingMsg === '1' || /\b(yes|haan|ha)\b/.test(lower);
+    const noMatch = incomingMsg === '2' || /\b(no|nahi|nai|safe|ok|okay)\b/.test(lower);
+    if (yesMatch) {
+      responseText = await activateEmergency(sender, session);
+    } else if (noMatch) {
+      session.state = 'SUPPORT';
+      responseText = withHelpFooter(
+        `I am with you. 🌸\n\nHow can I help you today?\n1️⃣ Know my legal rights\n2️⃣ Find a nearby support centre\n3️⃣ Prepare an FIR\n4️⃣ Just talk`
+      );
+    } else {
+      // Re-prompt — no state change
+      responseText =
+        `🌸 Before we continue —\n` +
+        `*Are you in danger right now?*\n\n` +
+        `1️⃣ Yes — I need help now\n` +
+        `2️⃣ No — I am safe`;
+    }
+    return sendTwiML(res, responseText);
   }
 
   // Detect language for non-FIR states
@@ -154,34 +201,41 @@ const handleMessage = async (req, res) => {
     session.lang = detectLang(incomingMsg);
   }
 
-  const lower = incomingMsg?.toLowerCase().trim() || '';
 
   // ── PRIORITY 1: DISGUISE KEYWORD (silent emergency) ─────────────────────────
   const disguiseKw = session.disguiseKeyword;
-  if (disguiseKw && incomingMsg?.toUpperCase() === disguiseKw.toUpperCase()) {
-    // Activate emergency silently in background
-    activateEmergency(sender, session).catch(err =>
-      console.error('[Emergency] Silent activation error:', err.message)
-    );
-    // Send innocent reply to screen
-    responseText = await activateDisguise(sender, session);
-    return sendTwiML(res, responseText);
+  if (disguiseKw) {
+    const normalizedBody = incomingMsg.trim().toLowerCase();
+    const normalizedSecret = disguiseKw.trim().toLowerCase();
+
+    if (normalizedBody === normalizedSecret) {
+      // Activate emergency silently in background
+      activateEmergency(sender, session).catch(err =>
+        console.error('[Emergency] Silent activation error:', err.message)
+      );
+      
+      // Fix 2: Activate disguise and get immediate response
+      const responseText = await activateDisguise(sender, session);
+      return sendTwiML(res, responseText);
+    }
   }
 
   // ── PRIORITY 2: ERASE — disguise mode ────────────────────────────────────────
   if (lower === 'erase') {
-    responseText = await activateDisguise(sender, session);
+    const responseText = await activateDisguise(sender, session);
     return sendTwiML(res, responseText);
   }
 
   // ── PRIORITY 3: DISGUISE MODE ─────────────────────────────────────────────────
   if (session.state === 'DISGUISE') {
-    if (lower === 'help') {
+    // EXIT disguise mode
+    if (lower === 'help' || lower === 'exit' || lower === 'sakhi') {
       session.state = 'SUPPORT';
       responseText = withHelpFooter(
-        `Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`
+        `🌸 Sakhi is back.\n\nHow can I help you?\n\n1️⃣ Legal rights\n2️⃣ Find shelters\n3️⃣ FIR help\n4️⃣ Just talk`
       );
     } else {
+      // Otherwise continue fake cooking mode
       responseText = getDisguiseResponse(incomingMsg);
     }
     return sendTwiML(res, responseText);
@@ -258,12 +312,10 @@ const handleMessage = async (req, res) => {
     return sendTwiML(res, responseText);
   }
 
-  // ── PRIORITY 8: PINCODE (not during FIR) ─────────────────────────────────────
+  // ── PRIORITY 8: PINCODE — save only, no shelter lookup (TASK 2: GPS-only shelters) ──
   if (extractPincode(incomingMsg) && session.state !== 'FIR') {
-    const pincode = extractPincode(incomingMsg);
-    session.pincode = pincode; // save for emergency use
-    responseText = withHelpFooter(formatShelterResponse(pincode));
-    return sendTwiML(res, responseText);
+    session.pincode = extractPincode(incomingMsg); // saved for session context only
+    // Do not trigger shelter lookup here — all shelter finding is now GPS-based
   }
 
   // ── TRIAGE ────────────────────────────────────────────────────────────────────
@@ -406,19 +458,19 @@ const handleMessage = async (req, res) => {
   if (session.state === 'SUPPORT_SHELTER_DISTRICT') {
     session.district = incomingMsg;
     // Assume state is Maharashtra for now since all current data is MH
-    session.geoState = 'Maharashtra'; 
+    session.geoState = 'Maharashtra';
     const shelter = getBestShelter(session);
-    
+
     // Reset state
     session.state = 'SUPPORT';
-    
+
     let msg = '';
     if (shelter && !shelter.isFallback) {
       msg = `Nearest Support Centre:\n\n📍 *${shelter.name}*\n📞 ${shelter.phone}\n\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
     } else {
       msg = `We couldn't find a support centre for ${incomingMsg}.\n\nPlease call Women Helpline: 181`;
     }
-    
+
     responseText = withHelpFooter(msg);
     return sendTwiML(res, responseText);
   }
