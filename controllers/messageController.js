@@ -213,7 +213,7 @@ const handleMessage = async (req, res) => {
       activateEmergency(sender, session).catch(err =>
         console.error('[Emergency] Silent activation error:', err.message)
       );
-      
+
       // Fix 2: Activate disguise and get immediate response
       const responseText = await activateDisguise(sender, session);
       return sendTwiML(res, responseText);

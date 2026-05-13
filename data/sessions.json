@@ -174,6 +174,33 @@
       "allShelters": [],
       "locationToken": null,
       "emergencyEndTime": 1778620243172
+    },
+    "whatsapp:+1234567890": {
+      "state": "EMERGENCY",
+      "lang": "en",
+      "firAnswers": [],
+      "firStep": 0,
+      "messageCount": 7,
+      "lastActiveTime": 1778671194619,
+      "disguiseKeyword": "cooking",
+      "trustedContacts": [
+        "+919876543210"
+      ],
+      "trustedContactNames": "Riya",
+      "pincode": "400001",
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false,
+      "emergencyStartTime": 1778671194607,
+      "locationCaptured": false,
+      "locationCoords": null,
+      "trustedContactAlerted": true,
+      "contactAlertTime": 1778671194782,
+      "checkInCount": 2,
+      "reAlerted": true,
+      "emergencyShelter": null,
+      "allShelters": [],
+      "locationToken": "2058c896ff2b9d2e986d7eed0da13d97"
     }
   }
 }
