@@ -206,11 +206,13 @@
       "state": "FIR",
       "lang": "en",
       "firAnswers": [
-        "Mere pati ne mara"
+        "Mere pati ne mara",
+        "4",
+        "hi"
       ],
-      "firStep": 1,
-      "messageCount": 24,
-      "lastActiveTime": 1778678609661,
+      "firStep": 3,
+      "messageCount": 26,
+      "lastActiveTime": 1778679461414,
       "disguiseKeyword": "apple",
       "trustedContacts": [
         "+918850281282"
