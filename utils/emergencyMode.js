@@ -443,6 +443,9 @@ const handleAlertContact = async (sender, session) => {
 
 // TASK 3: Uses shared multi-shelter formatter (GPS-only, top 3, sorted by distance)
 const handleMoreShelters = (session) => {
+  if (!session.locationCoords || session.locationCoords.lat == null) {
+    return `📍 *Location needed.*\n\nPlease share your *Live Location* first to see nearby support centres. You can tap the 📎 or + icon below, tap "Location", and send your current location.`;
+  }
   const shelterList = session.allShelters || [];
   return formatNearestSheltersResponse(shelterList);
 };
@@ -450,7 +453,7 @@ const handleMoreShelters = (session) => {
 const handleSafeNow = (sender, session) => {
   clearCheckInTimers(sender);
   session.emergencyEndTime = Date.now();
-  session.state = 'SUPPORT';
+  session.state = 'TRIAGE';
   // Wipe emergency-specific fields
   Object.assign(session, {
     emergencyStartTime: null, locationToken: null, locationCoords: null,
@@ -461,8 +464,9 @@ const handleSafeNow = (sender, session) => {
 
   return (
     'I am so relieved you are safe. 🌸\n\n' +
-    'I am still here with you whenever you need me.\n\n' +
-    'Would you like to switch to private mode? Type *Erase* at any time to turn Sakhi into a cooking app.'
+    'Do you need any more help right now?\n\n' +
+    '1️⃣ Yes — help me now\n' +
+    '2️⃣ No — I am okay'
   );
 };
 
@@ -479,7 +483,7 @@ const activateDisguise = async (sender, session) => {
   const prevToken = session.locationToken;
   if (prevToken) invalidateToken(prevToken);
 
-  // Set DISGUISE state BEFORE sending messages (prevents timer callbacks leaking emergency text)
+  // Set DISGUISE state BEFORE sending messages
   Object.assign(session, {
     state: 'DISGUISE',
     emergencyStartTime: null,
@@ -492,12 +496,12 @@ const activateDisguise = async (sender, session) => {
     reAlerted: false,
   });
 
-  // Flood chat with innocent cooking messages to scroll sensitive content off-screen
-  await sendMsg(sender, DISGUISE_MSGS[0]);
-  await sendMsg(sender, DISGUISE_MSGS[1]);
+  // Flood chat with innocent cooking messages in background (don't await)
+  sendMsg(sender, DISGUISE_MSGS[1]).catch(err => console.error('[Disguise] bg msg 1 fail:', err.message));
+  sendMsg(sender, DISGUISE_MSGS[2]).catch(err => console.error('[Disguise] bg msg 2 fail:', err.message));
 
-  // Third message returned via TwiML (standard response path)
-  return DISGUISE_MSGS[2];
+  // Return first message for immediate TwiML response
+  return DISGUISE_MSGS[0];
 };
 
 // ─── LOCATION COORDS UPDATE (called from location route) ─────────────────────
@@ -524,4 +528,6 @@ module.exports = {
   storeLocationInSession,
   FALLBACKS,
   buildEmergencyMsg,
+  DISGUISE_MSGS,
+  generateToken,
 };

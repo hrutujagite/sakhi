@@ -60,13 +60,37 @@ function findNearestShelters(lat, lng, limit = 3) {
 // All district / pincode / state fallbacks have been intentionally removed.
 
 function getBestShelter(session) {
-  const coords = session && session.locationCoords;
-  if (!coords || coords.lat == null || coords.lng == null) {
-    return null; // Caller must prompt user to share GPS — no approximate fallbacks
+  // 1. Try GPS location first (if available and nearest is within 50km)
+  if (session.locationCoords && session.locationCoords.lat != null && session.locationCoords.lng != null) {
+    const nearest = findNearestShelters(session.locationCoords.lat, session.locationCoords.lng, 1);
+    if (nearest.length > 0) return nearest[0];
   }
 
-  const nearest = findNearestShelters(coords.lat, coords.lng, 1);
-  return nearest.length > 0 ? nearest[0] : null;
+  // 2. Fallback to district matching
+  if (session.district) {
+    const districtResults = findByDistrict(session.district, session.geoState);
+    if (districtResults.length > 0) return districtResults[0];
+  }
+
+  // 3. Fallback to pincode matching
+  if (session.pincode) {
+    const pinResults = findSheltersByPincode(session.pincode);
+    if (pinResults.length > 0) return pinResults[0];
+  }
+
+  // 4. Fallback to state matching
+  if (session.geoState) {
+    const stateResults = findByState(session.geoState);
+    if (stateResults.length > 0) return stateResults[0];
+  }
+
+  // 5. National Helpline Fallback
+  return {
+    isFallback: true,
+    name: "National Women Helpline",
+    phone: "181",
+    message: "Please contact the national women helpline."
+  };
 }
 
 // ─── FORMAT MULTI-SHELTER RESPONSE ───────────────────────────────────────────
@@ -74,28 +98,27 @@ function getBestShelter(session) {
 
 function formatNearestSheltersResponse(nearestShelters) {
   if (!nearestShelters || nearestShelters.length === 0) {
-    return (
-      `🏠 No nearby verified shelter found within 50 km.\n\n` +
-      `Please contact Women Helpline: *181*\n` +
-      `They are free, available 24/7, and completely confidential.`
-    );
+    return `🏠 *No nearby support centres found.*
+
+To find centres closest to you, please share your *Live Location* using the link above.
+
+Otherwise, you can call the Women Helpline: *181* (24/7, free).`;
   }
 
-  const NUMBERS = ['1️⃣', '2️⃣', '3️⃣'];
-  let msg = `🏠 *Nearby Safe Spaces:*\n\n`;
-
-  nearestShelters.forEach((s, i) => {
-    msg += `${NUMBERS[i] || `${i + 1}.`} *${s.name}*\n`;
-    msg += `📍 ${s.address}, ${s.district}, ${s.state} - ${s.pincode}\n`;
-    msg += `📞 ${s.phone}\n`;
-    msg += `📏 ${s.distance} km away\n`;
-    msg += `🗺️ ${s.mapsLink}\n\n`;
+  let response = `🏠 *Nearby Safe Spaces:*\n\n`;
+  nearestShelters.forEach((shelter, index) => {
+    response += `${index + 1}️⃣ *${shelter.name}*\n`;
+    response += `📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
+    response += `📞 ${shelter.phone}\n`;
+    if (shelter.distance) {
+      response += `📏 ${shelter.distance} km away\n`;
+    }
+    response += `🗺️ ${shelter.mapsLink}\n\n`;
   });
 
-  msg += `_Choose the option safest and easiest for you to reach._\n\n`;
-  msg += `Helpline: 181 | Police: 112`;
-
-  return msg;
+  response += `_Choose the option safest and easiest for you to reach._\n\n`;
+  response += `Helpline: 181 | Police: 112`;
+  return response;
 }
 
 // ─── PINCODE LOOKUP (kept for formatShelterResponse only) ────────────────────
@@ -136,11 +159,22 @@ function findNearestShelter(userLat, userLng) {
 }
 
 function findByDistrict(district, state) {
+  const qDistrict = district.toLowerCase().trim();
+  
+  // Try matching with state first
+  if (state) {
+    const matched = shelters.filter(s => {
+      const sDistrict = s.district.toLowerCase();
+      return (sDistrict.includes(qDistrict) || qDistrict.includes(sDistrict)) &&
+             s.state.toLowerCase() === state.toLowerCase();
+    });
+    if (matched.length > 0) return matched;
+  }
+
+  // If no match with state, try matching district globally
   return shelters.filter(s => {
     const sDistrict = s.district.toLowerCase();
-    const qDistrict = district.toLowerCase();
-    return (sDistrict.includes(qDistrict) || qDistrict.includes(sDistrict)) &&
-           s.state.toLowerCase() === state.toLowerCase();
+    return (sDistrict.includes(qDistrict) || qDistrict.includes(sDistrict));
   });
 }
 

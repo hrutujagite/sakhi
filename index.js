@@ -17,7 +17,6 @@ app.use('/loc', locationRoute);
 
 const sessions = require('./utils/sessions');
 const fs = require('fs');
-const path = require('path');
 app.get('/debug/:phone', (req, res) => {
   const phone = req.params.phone.trim();
   const fixedPhone = phone.replace(/^ /, '+');

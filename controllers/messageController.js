@@ -1,6 +1,10 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
-const { formatShelterResponse } = require('../utils/shelterFinder');
+const {
+  findNearestShelters,
+  formatNearestSheltersResponse,
+  getBestShelter
+} = require('../utils/shelterFinder');
 const sessions = require('../utils/sessions');
 const {
   isDistress,
@@ -15,6 +19,8 @@ const {
   handleMoreShelters,
   handleSafeNow,
   buildEmergencyMsg,
+  DISGUISE_MSGS,
+  generateToken,
 } = require('../utils/emergencyMode');
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -150,6 +156,10 @@ const handleMessage = async (req, res) => {
       session.state = 'POST_ONBOARDING_TRIAGE';
       return sendTwiML(res,
         `Thank you! Setup is complete. 🌸\n\n` +
+        `📝 *Quick Guide:*\n` +
+        `• Type *"${session.disguiseKeyword}"* to hide this chat immediately (Disguise Mode).\n` +
+        `• Type *SAKHI* or *EXIT* while in Disguise Mode to come back to me.\n` +
+        `• Type *HELP* anytime if you need emergency assistance.\n\n` +
         `Before we continue —\n` +
         `*Are you in danger right now?*\n\n` +
         `1️⃣ Yes — I need help now\n` +
@@ -190,30 +200,38 @@ const handleMessage = async (req, res) => {
 
   // ── PRIORITY 1: DISGUISE KEYWORD (silent emergency) ─────────────────────────
   const disguiseKw = session.disguiseKeyword;
-  if (disguiseKw && incomingMsg?.toUpperCase() === disguiseKw.toUpperCase()) {
-    // Activate emergency silently in background
-    activateEmergency(sender, session).catch(err =>
-      console.error('[Emergency] Silent activation error:', err.message)
-    );
-    // Send innocent reply to screen
-    responseText = activateDisguise(sender, session);
-    return sendTwiML(res, responseText);
+  if (disguiseKw) {
+    const normalizedBody = incomingMsg.trim().toLowerCase();
+    const normalizedSecret = disguiseKw.trim().toLowerCase();
+
+    if (normalizedBody === normalizedSecret) {
+      // Activate emergency silently in background
+      activateEmergency(sender, session).catch(err =>
+        console.error('[Emergency] Silent activation error:', err.message)
+      );
+      
+      // Fix 2: Activate disguise and get immediate response
+      const responseText = await activateDisguise(sender, session);
+      return sendTwiML(res, responseText);
+    }
   }
 
   // ── PRIORITY 2: ERASE — disguise mode ────────────────────────────────────────
   if (lower === 'erase') {
-    responseText = activateDisguise(sender, session);
+    const responseText = await activateDisguise(sender, session);
     return sendTwiML(res, responseText);
   }
 
   // ── PRIORITY 3: DISGUISE MODE ─────────────────────────────────────────────────
   if (session.state === 'DISGUISE') {
-    if (lower === 'help') {
+    // EXIT disguise mode
+    if (lower === 'help' || lower === 'exit' || lower === 'sakhi') {
       session.state = 'SUPPORT';
       responseText = withHelpFooter(
-        `Main yahan hoon 🌸\n\nMain aapki madad kar sakti hoon:\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`
+        `🌸 Sakhi is back.\n\nHow can I help you?\n\n1️⃣ Legal rights\n2️⃣ Find shelters\n3️⃣ FIR help\n4️⃣ Just talk`
       );
     } else {
+      // Otherwise continue fake cooking mode
       responseText = getDisguiseResponse(incomingMsg);
     }
     return sendTwiML(res, responseText);
