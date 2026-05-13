@@ -363,17 +363,10 @@ const handleMessage = async (req, res) => {
           `6️⃣ *Free Legal Help* — DLSA, Protection Officer\n\n` +
           `Reply with any number for details. 🌸`,
       };
-      responseText = withHelpFooter(
-        langResponses[session.lang] ||
-        `📜 *Aapke Legal Rights (PWDVA):*\n\n` +
-        `1️⃣ *Ghar mein rehne ka haq* — Koi nikaal nahi sakta\n` +
-        `2️⃣ *Suraksha ka haq* — Court se protection order\n` +
-        `3️⃣ *Kharcha pane ka haq* — Maintenance\n` +
-        `4️⃣ *Bachon ki custody* — Court se maang sakte hain\n` +
-        `5️⃣ *Muavza* — Chot ke liye compensation\n` +
-        `6️⃣ *Free legal madad* — DLSA, Protection Officer\n\n` +
-        `Kisi bhi number par reply karein, detail mein bataungi. 🌸`
-      );
+      const supportMenu = 
+        `Main yahan hoon 🌸\n\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`;
+
+      responseText = withHelpFooter(supportMenu);
       return sendTwiML(res, responseText);
     }
 
@@ -381,7 +374,7 @@ const handleMessage = async (req, res) => {
     if (incomingMsg === '2' || lower.includes('shelter')) {
       session.state = 'SUPPORT_SHELTER_MENU';
       responseText = withHelpFooter(
-        `📍 For the most accurate nearby support centres, you can securely share your live location.\n\nReply:\n1️⃣ Share Live Location\n2️⃣ Enter District/Area Manually`
+        `📍 For nearby support centres, share your location.\n\nReply:\n1️⃣ Share Live Location\n2️⃣ Enter District Manually\n↩️ Reply *0* for main menu`
       );
       return sendTwiML(res, responseText);
     }
@@ -398,7 +391,7 @@ const handleMessage = async (req, res) => {
         en: `I'll help you prepare your FIR 🌸\n\n⚖️ *Remember:*\n• Police CANNOT refuse to file FIR (Section 154)\n• Zero FIR can be filed at ANY police station\n• If police refuse → complain to SP, Women's Cell, or Magistrate\n\nI'll ask a few questions — one by one. Take your time.`,
       };
       responseText = (langIntro[session.lang] ||
-        `Main aapki FIR taiyaar karne mein madad karungi 🌸\n\n⚖️ *Yaad rakhein:*\n• Police FIR lene se mana nahi kar sakti (Section 154)\n• Zero FIR kisi bhi thane mein ho sakti hai\n• Agar police na sune → SP office, Women's Cell, ya Magistrate se shikayat karein\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.`) +
+        `Main aapki FIR taiyaar karne mein madad karungi 🌸\n\n⚖️ *Yaad rakhein:*\n• Police FIR lene se mana nahi kar sakti (Section 154)\n• Zero FIR kisi bhi thane mein ho sakti hai\n• Agar police na sune → SP office, Women's Cell, ya Magistrate se shikayat karein\n\nKuch sawaal puchungi — ek ek karke. Aaram se jawab dena.\n(Reply *0* any time to cancel)`) +
         `\n\n*Sawaal 1:*\n${questions[0]}`;
       return sendTwiML(res, responseText);
     }
@@ -432,26 +425,34 @@ const handleMessage = async (req, res) => {
 
   // ── SHELTER MENU HANDLING ─────────────────────────────────────────────────────
   if (session.state === 'SUPPORT_SHELTER_MENU') {
+    if (incomingMsg === '0') {
+      session.state = 'SUPPORT';
+      return sendTwiML(res, withHelpFooter(`Main yahan hoon 🌸\n\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`));
+    }
     if (incomingMsg === '1') {
       session.state = 'SUPPORT_SHELTER_LOC';
       const token = generateToken(sender, 'support');
       const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
       responseText = withHelpFooter(
-        `To improve nearby support recommendations, tap below:\n\n${BASE_URL}/loc/${token}`
+        `To improve nearby support recommendations, tap below:\n\n${BASE_URL}/loc/${token}\n\n↩️ Reply *0* for main menu`
       );
       return sendTwiML(res, responseText);
     } else if (incomingMsg === '2') {
       session.state = 'SUPPORT_SHELTER_DISTRICT';
-      responseText = withHelpFooter(`Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)`);
+      responseText = withHelpFooter(`Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)\n\n↩️ Reply *0* for main menu`);
       return sendTwiML(res, responseText);
     } else {
-      responseText = withHelpFooter(`Please reply with 1 or 2.`);
+      responseText = withHelpFooter(`Please reply with 1, 2 or 0 for menu.`);
       return sendTwiML(res, responseText);
     }
   }
 
   // ── SHELTER DISTRICT HANDLING ─────────────────────────────────────────────────
   if (session.state === 'SUPPORT_SHELTER_DISTRICT') {
+    if (incomingMsg === '0') {
+      session.state = 'SUPPORT';
+      return sendTwiML(res, withHelpFooter(`Main yahan hoon 🌸\n\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`));
+    }
     session.district = incomingMsg;
     // Assume state is Maharashtra for now since all current data is MH
     session.geoState = 'Maharashtra';
@@ -467,7 +468,7 @@ const handleMessage = async (req, res) => {
       msg = `We couldn't find a support centre for ${incomingMsg}.\n\nPlease call Women Helpline: 181`;
     }
 
-    responseText = withHelpFooter(msg);
+    responseText = withHelpFooter(msg + `\n\n↩️ Reply *0* to see the main menu again.`);
     return sendTwiML(res, responseText);
   }
 
@@ -540,21 +541,28 @@ const handleMessage = async (req, res) => {
 
   // ── FIR FLOW ───────────────────────────────────────────────────────────────────
   if (session.state === 'FIR') {
+    if (incomingMsg === '0') {
+      session.state = 'SUPPORT';
+      return sendTwiML(res, withHelpFooter(`Main yahan hoon 🌸\n\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`));
+    }
     const questions = FIR_QUESTIONS[session.lang] || FIR_QUESTIONS.hl;
     session.firAnswers.push(incomingMsg);
     session.firStep = session.firAnswers.length;
     if (session.firStep < questions.length) {
-      responseText = `*Sawaal ${session.firStep + 1}:*\n${questions[session.firStep]}`;
+      responseText = `*Sawaal ${session.firStep + 1}:*\n${questions[session.firStep]}\n\n(Reply *0* to cancel)`;
     } else {
       session.state = 'SUPPORT';
-      responseText = await getFIRDraft(session.firAnswers, session.lang);
+      responseText = (await getFIRDraft(session.firAnswers, session.lang)) + `\n\n↩️ Reply *0* for main menu`;
     }
     return sendTwiML(res, responseText);
   }
 
   // ── SUPPORT / EMERGENCY / DEFAULT — AI response ────────────────────────────────
+  if (incomingMsg === '0' && session.state === 'SUPPORT') {
+    return sendTwiML(res, withHelpFooter(`Main yahan hoon 🌸\n\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter dhundhna\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna\n\nAapko kya chahiye?`));
+  }
   const aiReply = await getAIResponse(incomingMsg, session);
-  responseText = withHelpFooter(aiReply);
+  responseText = withHelpFooter(aiReply + `\n\n↩️ Reply *0* for main menu`);
   return sendTwiML(res, responseText);
 };
 
