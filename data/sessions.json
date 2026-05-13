@@ -1,3 +1,51 @@
 {
-  "sessions": {}
+  "sessions": {
+    "whatsapp:+1234567890": {
+      "state": "EMERGENCY",
+      "lang": "en",
+      "firAnswers": [],
+      "firStep": 0,
+      "messageCount": 6,
+      "lastActiveTime": 1778661420608,
+      "disguiseKeyword": "cooking",
+      "trustedContacts": [
+        "+919876543210"
+      ],
+      "trustedContactNames": "Riya",
+      "pincode": "400001",
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false,
+      "emergencyStartTime": 1778661720615,
+      "locationCaptured": false,
+      "locationCoords": null,
+      "trustedContactAlerted": false,
+      "contactAlertTime": null,
+      "checkInCount": 2,
+      "reAlerted": true,
+      "emergencyShelter": {
+        "name": "One Stop Centre - Mumbai City",
+        "address": "One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012",
+        "pincode": "400012",
+        "phone": "9653660408",
+        "district": "Mumbai City",
+        "state": "Maharashtra",
+        "lat": 19.054999,
+        "lng": 72.8692035
+      },
+      "allShelters": [
+        {
+          "name": "One Stop Centre - Mumbai City",
+          "address": "One Stop Centre, Mumbai City, Old Building, KEM Hospital, Acharya Dade Marg, Parel, Mumbai- 400012",
+          "pincode": "400012",
+          "phone": "9653660408",
+          "district": "Mumbai City",
+          "state": "Maharashtra",
+          "lat": 19.054999,
+          "lng": 72.8692035
+        }
+      ],
+      "locationToken": "cdb0117d261a3d6d570a792933d94d2e"
+    }
+  }
 }

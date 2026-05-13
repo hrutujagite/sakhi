@@ -1,6 +1,6 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
-const { formatShelterResponse } = require('../utils/shelterFinder');
+const { formatShelterResponse, getBestShelter } = require('../utils/shelterFinder');
 const sessions = require('../utils/sessions');
 const {
   isDistress,
@@ -164,13 +164,13 @@ const handleMessage = async (req, res) => {
       console.error('[Emergency] Silent activation error:', err.message)
     );
     // Send innocent reply to screen
-    responseText = activateDisguise(sender, session);
+    responseText = await activateDisguise(sender, session);
     return sendTwiML(res, responseText);
   }
 
   // ── PRIORITY 2: ERASE — disguise mode ────────────────────────────────────────
   if (lower === 'erase') {
-    responseText = activateDisguise(sender, session);
+    responseText = await activateDisguise(sender, session);
     return sendTwiML(res, responseText);
   }
 
