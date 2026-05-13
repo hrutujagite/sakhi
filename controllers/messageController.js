@@ -1,10 +1,14 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
+<<<<<<< HEAD
+const { formatShelterResponse, getBestShelter } = require('../utils/shelterFinder');
+=======
 const {
   findNearestShelters,
   formatNearestSheltersResponse,
   getBestShelter
 } = require('../utils/shelterFinder');
+>>>>>>> e2a7bc4c2728d07efbfa912c5ce5c029eaf2e925
 const sessions = require('../utils/sessions');
 const {
   isDistress,
