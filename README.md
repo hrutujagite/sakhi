@@ -3,7 +3,7 @@
 </p>
 
 <h3 align="center">A Silent Guardian on WhatsApp for Domestic Violence Survivors</h3>
-
+<h4 align="left">Click here to play the prototype video: https://drive.google.com/file/d/1gbPeLZkO9rbebB8ixSK5fO3o7KmNOJX5/view?usp=drive_link</h4>
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white" />
   <img src="https://img.shields.io/badge/AI-Groq_LLaMA_3.3_70B-orange?style=flat-square" />
