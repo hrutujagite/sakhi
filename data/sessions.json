@@ -201,6 +201,39 @@
       "emergencyShelter": null,
       "allShelters": [],
       "locationToken": "2058c896ff2b9d2e986d7eed0da13d97"
+    },
+    "whatsapp:+919642220057": {
+      "state": "FIR",
+      "lang": "en",
+      "firAnswers": [
+        "Mere pati ne mara"
+      ],
+      "firStep": 1,
+      "messageCount": 24,
+      "lastActiveTime": 1778678609661,
+      "disguiseKeyword": "apple",
+      "trustedContacts": [
+        "+918850281282"
+      ],
+      "trustedContactNames": "Sirisha",
+      "pincode": "400703",
+      "district": null,
+      "savedArea": null,
+      "policeAlertPreference": false,
+      "emergencyStartTime": null,
+      "locationCaptured": false,
+      "locationCoords": {
+        "lat": 19.0714434,
+        "lng": 72.9871675
+      },
+      "trustedContactAlerted": false,
+      "contactAlertTime": null,
+      "checkInCount": 0,
+      "reAlerted": false,
+      "emergencyShelter": null,
+      "allShelters": [],
+      "locationToken": null,
+      "emergencyEndTime": 1778678318432
     }
   }
 }

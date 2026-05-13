@@ -194,11 +194,28 @@ const getMapsLink = (shelter) => {
   return `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
 };
 
-const DISGUISE_MSGS = [
-  '🌿 Here is a healthy recipe idea for today: Moong Dal Khichdi.\n\nIngredients:\n- 1/2 cup rice\n- 1/2 cup yellow moong dal\n- 1 tsp ghee\n- A pinch of turmeric\n- Salt to taste\n\nInstructions:\n1. Wash dal and rice.\n2. Heat ghee in cooker, add cumin seeds.\n3. Add dal, rice, turmeric, and water.\n4. Cook for 3 whistles.\n\nEnjoy this light, nutritious meal ready in 20 minutes!',
-  '🍵 Wellness tip: Start your morning with warm turmeric milk.\n\nIt supports immunity and keeps you calm.\n\nSteps:\n1. Boil 1 glass of milk.\n2. Add 1/2 tsp turmeric powder.\n3. Add a pinch of black pepper.\n4. Sweeten with jaggery.\n\nDrink it warm before bed for a good night\'s sleep.',
-  '🥗 Today\'s healthy meal: Sprout salad with lemon and a pinch of chaat masala!\n\nIngredients:\n- 1 cup mixed sprouts\n- 1 chopped onion\n- 1 chopped tomato\n- 1 green chilli\n- Coriander leaves\n- Lemon juice\n\nMix everything well and serve fresh. It is packed with protein!',
-];
+const DISGUISE_MSGS = {
+  en: [
+    '🌿 Here is a healthy recipe idea for today: Moong Dal Khichdi.\n\nIngredients:\n- 1/2 cup rice\n- 1/2 cup yellow moong dal\n- 1 tsp ghee\n- A pinch of turmeric\n- Salt to taste\n\nInstructions:\n1. Wash dal and rice.\n2. Heat ghee in cooker, add cumin seeds.\n3. Add dal, rice, turmeric, and water.\n4. Cook for 3 whistles.\n\nEnjoy this light, nutritious meal ready in 20 minutes!',
+    '🍵 Wellness tip: Start your morning with warm turmeric milk.\n\nIt supports immunity and keeps you calm.\n\nSteps:\n1. Boil 1 glass of milk.\n2. Add 1/2 tsp turmeric powder.\n3. Add a pinch of black pepper.\n4. Sweeten with jaggery.\n\nDrink it warm before bed for a good night\'s sleep.',
+    '🥗 Today\'s healthy meal: Sprout salad with lemon and a pinch of chaat masala!\n\nIngredients:\n- 1 cup mixed sprouts\n- 1 chopped onion\n- 1 chopped tomato\n- 1 green chilli\n- Coriander leaves\n- Lemon juice\n\nMix everything well and serve fresh. It is packed with protein!'
+  ],
+  hi: [
+    '🌿 आज की स्वस्थ रेसिपी: मूंग दाल खिचड़ी।\n\nसामग्री:\n- 1/2 कप चावल\n- 1/2 कप पीली मूंग दाल\n- 1 चम्मच घी\n- चुटकी भर हल्दी\n- नमक स्वादानुसार\n\nविधि:\n1. दाल और चावल धो लें।\n2. कुकर में घी गरम करें, जीरा डालें।\n3. दाल, चावल, हल्दी और पानी डालें।\n4. 3 सीटी आने तक पकाएं।\n\n20 मिनट में तैयार इस हल्के भोजन का आनंद लें!',
+    '🍵 स्वास्थ्य टिप: अपनी सुबह की शुरुआत हल्दी वाले गर्म दूध से करें।\n\nयह इम्युनिटी बढ़ाता है।\n\nकदम:\n1. 1 गिलास दूध उबालें।\n2. 1/2 चम्मच हल्दी पाउडर डालें।\n3. चुटकी भर काली मिर्च डालें।\n4. गुड़ के साथ मीठा करें।',
+    '🥗 आज का स्वस्थ भोजन: अंकुरित सलाद!\n\nसामग्री:\n- 1 कप मिक्स स्प्राउट्स\n- 1 कटा हुआ प्याज\n- 1 कटा हुआ टमाटर\n- 1 हरी मिर्च\n- धनिया पत्ती\n- नींबू का रस\n\nसब कुछ अच्छी तरह मिलाएं और ताजा परोसें। यह प्रोटीन से भरपूर है!'
+  ],
+  hl: [
+    '🌿 Aaj ki healthy recipe: Moong Dal Khichdi.\n\nIngredients:\n- 1/2 cup chawal\n- 1/2 cup peeli moong dal\n- 1 tsp ghee\n- Chutki bhar haldi\n- Namak swaad anusar\n\nSteps:\n1. Dal aur chawal dho lein.\n2. Cooker mein ghee garam karein, jeera dalein.\n3. Dal, chawal, haldi aur pani dalein.\n4. 3 seeti aane tak pakayein.\n\n20 minute mein tayaar is halke khane ka anand lein!',
+    '🍵 Wellness tip: Apni subah ki shuruwat garam haldi wale doodh se karein.\n\nYeh immunity badhata hai.\n\nSteps:\n1. 1 glass doodh ubalein.\n2. 1/2 tsp haldi powder dalein.\n3. Chutki bhar kali mirch dalein.\n4. Gur ke saath meetha karein.',
+    '🥗 Aaj ka healthy khana: Sprout salad!\n\nIngredients:\n- 1 cup mix sprouts\n- 1 kata hua pyaaz\n- 1 kata hua tamatar\n- 1 hari mirch\n- Dhaniya patti\n- Nimbu ka ras\n\nSab kuch achi tarah milayein aur taaza serve karein. Yeh protein se bharpoor hai!'
+  ],
+  mr: [
+    '🌿 आजची आरोग्यदायी रेसिपी: मुगाच्या डाळीची खिचडी.\n\nसाहित्य:\n- १/२ कप तांदूळ\n- १/२ कप पिवळी मुगाची डाळ\n- १ चमचा तूप\n- चिमूटभर हळद\n- चवीनुसार मीठ\n\nकृती:\n१. डाळ आणि तांदूळ धुवा.\n२. कुकरमध्ये तूप गरम करा, जिरे घाला.\n३. डाळ, तांदूळ, हळद आणि पाणी घाला.\n४. ३ शिट्ट्या होईपर्यंत शिजवा.\n\n२० मिनिटांत तयार होणाऱ्या या हलक्या जेवणाचा आनंद घ्या!',
+    '🍵 वेलनेस टिप: तुमच्या दिवसाची सुरुवात कोमट हळदीच्या दुधाने करा.\n\nयामुळे प्रतिकारशक्ती वाढते.\n\nकृती:\n१. १ ग्लास दूध उकळा.\n२. १/२ चमचा हळद घाला.\n३. चिमूटभर काळी मिरी घाला.\n४. गुळासोबत गोड करा.',
+    '🥗 आजचे आरोग्यदायी जेवण: मोड आलेल्या कडधान्यांची कोशिंबीर!\n\nसाहित्य:\n- १ कप मोड आलेली कडधान्ये\n- १ चिरलेला कांदा\n- १ चिरलेला टोमॅटो\n- १ हिरवी मिरची\n- कोथिंबीर\n- लिंबाचा रस\n\nसर्व साहित्य चांगले मिसळा आणि ताजे खा. हे प्रोटीनने भरपूर आहे!'
+  ]
+};
 
 // ─── TWILIO OUTBOUND ──────────────────────────────────────────────────────────
 
@@ -496,12 +513,15 @@ const activateDisguise = async (sender, session) => {
     reAlerted: false,
   });
 
-  // Flood chat with innocent cooking messages in background (don't await)
-  sendMsg(sender, DISGUISE_MSGS[1]).catch(err => console.error('[Disguise] bg msg 1 fail:', err.message));
-  sendMsg(sender, DISGUISE_MSGS[2]).catch(err => console.error('[Disguise] bg msg 2 fail:', err.message));
+  const lang = session.lang || 'en';
+  const recipes = DISGUISE_MSGS[lang] || DISGUISE_MSGS.en;
 
-  // Return first message for immediate TwiML response
-  return DISGUISE_MSGS[0];
+  // Flood chat with innocent cooking messages in background (don't await)
+  sendMsg(sender, recipes[0]).catch(err => console.error('[Disguise] bg msg 1 fail:', err.message));
+  sendMsg(sender, recipes[1]).catch(err => console.error('[Disguise] bg msg 2 fail:', err.message));
+
+  // Return the third to be sent by the standard TwiML response
+  return recipes[2];
 };
 
 // ─── LOCATION COORDS UPDATE (called from location route) ─────────────────────

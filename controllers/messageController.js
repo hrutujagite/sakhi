@@ -1,14 +1,11 @@
 const twilio = require('twilio');
 const { getAIResponse, getFIRDraft } = require('../utils/groq');
-<<<<<<< HEAD
-const { formatShelterResponse, getBestShelter } = require('../utils/shelterFinder');
-=======
 const {
   findNearestShelters,
   formatNearestSheltersResponse,
-  getBestShelter
+  getBestShelter,
+  findByDistrict
 } = require('../utils/shelterFinder');
->>>>>>> e2a7bc4c2728d07efbfa912c5ce5c029eaf2e925
 const sessions = require('../utils/sessions');
 const {
   isDistress,
@@ -93,14 +90,102 @@ const detectLang = (msg) => {
 const withHelpFooter = (text) =>
   `${text}\n\n_⚡ Reply *HELP* at any time if you need emergency assistance._`;
 
+const ONBOARDING_PROMPTS = {
+  en: {
+    start: `Namaste! 🌸 I am Sakhi. Before we start, I need to know a few things to keep you safe.\n\nPlease reply with the phone number(s) of people you trust. Start with +91 (e.g. +919876543210). You can send multiple numbers separated by commas.`,
+    names: `What are their names?`,
+    secret: `Got it. Now, choose a secret word. If you type this word anytime, I will immediately hide our chat and act like a cooking bot.`,
+    pincode: `Secret word saved. Lastly, what is your 6-digit Pincode? This helps me find nearby safe spaces if you ever need them.`,
+    complete: (kw) => `Thank you! Setup is complete. 🌸\n\n📝 *Quick Guide:*\n• Type *"${kw}"* to hide this chat immediately (Disguise Mode).\n• Type *SAKHI* or *EXIT* while in Disguise Mode to come back to me.\n• Type *HELP* anytime if you need emergency assistance.\n\nBefore we continue —\n*Are you in danger right now?*\n\n1️⃣ Yes — I need help now\n2️⃣ No — I am safe`
+  },
+  hi: {
+    start: `नमस्ते! 🌸 मैं सखी हूँ। शुरू करने से पहले, आपकी सुरक्षा के लिए मुझे कुछ जानकारी चाहिए।\n\nकृपया उन लोगों के फोन नंबर दें जिन पर आप भरोसा करती हैं। +91 से शुरू करें। आप कॉमा (,) लगाकर कई नंबर भेज सकती हैं।`,
+    names: `उनके नाम क्या हैं?`,
+    secret: `समझ गई। अब एक गुप्त शब्द चुनें। यदि आप कभी भी यह शब्द टाइप करती हैं, तो मैं तुरंत हमारी चैट छिपा दूंगी और एक कुकिंग बॉट की तरह काम करूंगी।`,
+    pincode: `गुप्त शब्द सेव हो गया। अंत में, आपका 6 अंकों का पिनकोड क्या है? इससे मुझे आपके लिए सुरक्षित जगह खोजने में मदद मिलेगी।`,
+    complete: (kw) => `धन्यवाद! सेटअप पूरा हो गया। 🌸\n\n📝 *क्विक गाइड:*\n• तुरंत चैट छिपाने के लिए *"${kw}"* टाइप करें।\n• वापस आने के लिए *SAKHI* टाइप करें।\n• आपात स्थिति में कभी भी *HELP* लिखें।\n\nआगे बढ़ने से पहले —\n*क्या आप अभी खतरे में हैं?*\n\n1️⃣ हाँ — मुझे अभी मदद चाहिए\n2️⃣ नहीं — मैं सुरक्षित हूँ`
+  },
+  hl: {
+    start: `Namaste! 🌸 Main Sakhi hoon. Shuru karne se pehle, aapki safety ke liye mujhe kuch details chahiye.\n\nKripya apne bharosemand logon ke phone numbers bhejein. +91 se shuru karein. Aap comma (,) lagakar multiple numbers bhej sakti hain.`,
+    names: `Unke naam kya hain?`,
+    secret: `Samajh gayi. Ab ek secret word chunein. Agar aap kabhi bhi yeh word type karengi, toh main turant hamari chat hide kar dungi aur cooking bot ban jaungi.`,
+    pincode: `Secret word save ho gaya. Aakhir mein, aapka 6-digit Pincode kya hai? Isse mujhe aapke aas-paas safe jagah dhoondhne mein madad milegi.`,
+    complete: (kw) => `Thank you! Setup complete ho gaya. 🌸\n\n📝 *Quick Guide:*\n• Chat hide karne ke liye *"${kw}"* type karein.\n• Wapas aane ke liye *SAKHI* type karein.\n• Emergency mein kabhi bhi *HELP* likhein.\n\nAage badhne se pehle —\n*Kya aap abhi khatre mein hain?*\n\n1️⃣ Haan — Mujhe ABHI madad chahiye\n2️⃣ Nahi — Main safe hoon`
+  },
+  mr: {
+    start: `नमस्ते! 🌸 मी सखी आहे. सुरु करण्यापूर्वी, तुमच्या सुरक्षिततेसाठी मला काही माहिती हवी आहे.\n\nकृपया तुमच्या विश्वासातील लोकांचे फोन नंबर पाठवा. +91 ने सुरुवात करा. तुम्ही स्वल्पविराम (,) वापरून अनेक नंबर पाठवू शकता.`,
+    names: `त्यांची नावे काय आहेत?`,
+    secret: `समजले. आता एक गुप्त शब्द निवडा. जर तुम्ही कधीही हा शब्द टाईप केला, तर मी त्वरित आपली चॅट लपवेन आणि कुकिंग बॉट सारखे वागेन.`,
+    pincode: `गुप्त शब्द सेव्ह झाला. शेवटी, तुमचा ६ अंकी पिनकोड काय आहे? यामुळे मला तुमच्या जवळच्या सुरक्षित जागा शोधण्यास मदत होईल.`,
+    complete: (kw) => `धन्यवाद! सेटअप पूर्ण झाला. 🌸\n\n📝 *क्विक गाईड:*\n• चॅट लपवण्यासाठी *"${kw}"* टाईप करा.\n• परत येण्यासाठी *SAKHI* टाईप करा.\n• आणीबाणीत कधीही *HELP* लिहा.\n\nपुढे जाण्यापूर्वी —\n*तुम्ही आता धोक्यात आहात का?*\n\n1️⃣ हो — मला आत्ता मदत हवी आहे\n2️⃣ नाही — मी सुरक्षित आहे`
+  }
+};
+
+const GENERAL_PROMPTS = {
+  en: {
+    triage: `Namaste 🌸 I am Sakhi. I am right here with you.\n\nAre you in danger right now?\n\nReply:\n1️⃣ YES - I need help NOW\n2️⃣ NO - I need guidance and support`,
+    emergencyConfirm: `I am right here with you. Do you need emergency help right now? 🌸\n\n1️⃣ Yes — help me now\n2️⃣ No — I am okay`,
+    supportMenu: `I am with you. 🌸\n\nHow can I help you today?\n1️⃣ Know my legal rights\n2️⃣ Find a nearby support centre\n3️⃣ Prepare an FIR\n4️⃣ Just talk`,
+    shelterMenu: `📍 For the most accurate nearby support centres, you can securely share your live location.\n\nReply:\n1️⃣ Share Live Location\n2️⃣ Enter District/Area Manually`,
+    shelterDistrict: `Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)`,
+    invalidOption: `Please reply with a valid option.`
+  },
+  hi: {
+    triage: `नमस्ते 🌸 मैं सखी हूँ। मैं यहाँ आपके साथ हूँ।\n\nक्या आप अभी खतरे में हैं?\n\nउत्तर दें:\n1️⃣ हाँ - मुझे अभी मदद चाहिए\n2️⃣ नहीं - मुझे मार्गदर्शन और समर्थन चाहिए`,
+    emergencyConfirm: `मैं आपके साथ हूँ। क्या आपको अभी आपातकालीन मदद चाहिए? 🌸\n\n1️⃣ हाँ — अभी मेरी मदद करें\n2️⃣ नहीं — मैं ठीक हूँ`,
+    supportMenu: `मैं यहाँ हूँ। 🌸\n\nआपको क्या चाहिए?\n1️⃣ आपके कानूनी अधिकार\n2️⃣ नजदीकी आश्रय (shelter)\n3️⃣ FIR की तैयारी\n4️⃣ बस बात करना`,
+    shelterMenu: `📍 सबसे सटीक नजदीकी सहायता केंद्रों के लिए, आप सुरक्षित रूप से अपना लाइव स्थान साझा कर सकती हैं।\n\nउत्तर दें:\n1️⃣ लाइव स्थान (Live Location) साझा करें\n2️⃣ जिले/क्षेत्र का नाम स्वयं दर्ज करें`,
+    shelterDistrict: `कृपया अपने जिले, शहर या क्षेत्र का नाम दर्ज करें। (जैसे: पुणे, मुंबई उपनगर)`,
+    invalidOption: `कृपया सही विकल्प के साथ उत्तर दें।`
+  },
+  hl: {
+    triage: `Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye`,
+    emergencyConfirm: `Main yahan hoon. Kya aapko abhi emergency madad chahiye? 🌸\n\n1️⃣ Haan — abhi meri madad karein\n2️⃣ Nahi — main theek hoon`,
+    supportMenu: `Main yahan hoon. 🌸\n\nAapko kya chahiye?\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna`,
+    shelterMenu: `📍 Sabse accurate nazdeeki support centres ke liye, aap safely apni live location share kar sakti hain.\n\nReply karein:\n1️⃣ Live Location share karein\n2️⃣ District/Area ka naam manually likhein`,
+    shelterDistrict: `Kripya apne district, city, ya area ka naam likhein. (e.g. Pune, Mumbai Suburban)`,
+    invalidOption: `Kripya sahi option ke saath reply karein.`
+  },
+  mr: {
+    triage: `नमस्ते 🌸 मी सखी आहे. मी इथे तुमच्या सोबत आहे.\n\nतुम्ही आता धोक्यात आहात का?\n\nउत्तर द्या:\n1️⃣ हो - मला आत्ता मदत हवी आहे\n2️⃣ नाही - मला मार्गदर्शन आणि पाठिंबा हवा आहे`,
+    emergencyConfirm: `मी तुमच्या सोबत आहे. तुम्हाला आत्ता आणीबाणीच्या मदतीची गरज आहे का? 🌸\n\n1️⃣ हो — मला आत्ता मदत करा\n2️⃣ नाही — मी ठीक आहे`,
+    supportMenu: `मी इथे आहे. 🌸\n\nतुम्हाला काय हवे आहे?\n1️⃣ तुमचे कायदेशीर अधिकार\n2️⃣ जवळचा निवारा (shelter)\n3️⃣ FIR ची तयारी\n4️⃣ फक्त बोलायचे आहे`,
+    shelterMenu: `📍 सर्वात अचूक जवळच्या मदत केंद्रांसाठी, तुम्ही तुमचे लाईव्ह लोकेशन सुरक्षितपणे शेअर करू शकता.\n\nउत्तर द्या:\n1️⃣ लाईव्ह लोकेशन शेअर करा\n2️⃣ जिल्हा/विभागाचे नाव स्वतः टाईप करा`,
+    shelterDistrict: `कृपया तुमच्या जिल्ह्याचे, शहराचे किंवा विभागाचे नाव टाईप करा. (उदा. पुणे, मुंबई उपनगर)`,
+    invalidOption: `कृपया योग्य पर्याय निवडा.`
+  }
+};
+
 // ─── MAIN HANDLER ─────────────────────────────────────────────────────────────
 
 const handleMessage = async (req, res) => {
-  const incomingMsg = req.body.Body?.trim();
+  const incomingMsg = req.body.Body?.trim() || '';
   const sender = req.body.From;
 
   console.log(`[${new Date().toISOString()}] From ${sender}: ${incomingMsg}`);
   console.log(req.body);
+  console.log(`[DEBUG] Location fields: Latitude=${req.body.Latitude}, Longitude=${req.body.Longitude}, latitude=${req.body.latitude}, longitude=${req.body.longitude}`);
+
+  // ── PRIORITY 0: WHATSAPP LOCATION PIN ─────────────────────────────────────────
+  const locLat = req.body.Latitude || req.body.latitude;
+  const locLng = req.body.Longitude || req.body.longitude;
+  if (locLat && locLng && sessions[sender]) {
+    const lat = parseFloat(locLat);
+    const lng = parseFloat(locLng);
+    
+    // Save coordinates in session for future use
+    sessions[sender].locationCoords = { lat, lng };
+    
+    // Get top 3 nearest shelters based on WhatsApp GPS pin
+    const nearest = findNearestShelters(lat, lng, 3);
+    const msg = formatNearestSheltersResponse(nearest);
+    
+    // Only change state if not in an active emergency
+    if (sessions[sender].state !== 'EMERGENCY') {
+      sessions[sender].state = 'SUPPORT';
+    }
+    return sendTwiML(res, msg);
+  }
 
   // Hidden developer command to wipe the session and start from scratch
   if (incomingMsg && incomingMsg.trim().toUpperCase() === 'RESET SESSION') {
@@ -109,8 +194,9 @@ const handleMessage = async (req, res) => {
   }
 
   if (!sessions[sender]) {
+    const initialLang = detectLang(incomingMsg);
     sessions[sender] = {
-      state: 'ONBOARDING_CONTACT_PHONE', history: [], lang: 'hl',
+      state: 'ONBOARDING_CONTACT_PHONE', history: [], lang: initialLang,
       firAnswers: [], firStep: 0,
       messageCount: 0, lastActiveTime: null,
       disguiseKeyword: null,
@@ -121,10 +207,16 @@ const handleMessage = async (req, res) => {
       savedArea: null,
       policeAlertPreference: false,
     };
-    return sendTwiML(res, `Namaste! 🌸 I am Sakhi. Before we start, I need to know a few things to keep you safe.\n\nPlease reply with the phone number(s) of people you trust. Start with +91 (e.g. +919876543210). You can send multiple numbers separated by commas.`);
+    return sendTwiML(res, ONBOARDING_PROMPTS[initialLang].start);
   }
 
   const session = sessions[sender];
+
+  // Detect language for non-FIR states
+  if (incomingMsg && session.state !== 'FIR') {
+    session.lang = detectLang(incomingMsg);
+  }
+
   console.log(session);
   let responseText = '';
 
@@ -134,20 +226,21 @@ const handleMessage = async (req, res) => {
 
   // ── ONBOARDING FLOW ──────────────────────────────────────────────────────────
   if (session.state.startsWith('ONBOARDING_')) {
+    const lang = session.lang || 'en';
     if (session.state === 'ONBOARDING_CONTACT_PHONE') {
       session.trustedContacts = incomingMsg.split(',').map(p => p.replace(/[^0-9+]/g, '')).filter(p => p);
       session.state = 'ONBOARDING_CONTACT_NAME';
-      return sendTwiML(res, `What are their names?`);
+      return sendTwiML(res, ONBOARDING_PROMPTS[lang].names);
     }
     if (session.state === 'ONBOARDING_CONTACT_NAME') {
       session.trustedContactNames = incomingMsg;
       session.state = 'ONBOARDING_DISGUISE_KEY';
-      return sendTwiML(res, `Got it. Now, choose a secret word. If you type this word anytime, I will immediately hide our chat and act like a cooking bot.`);
+      return sendTwiML(res, ONBOARDING_PROMPTS[lang].secret);
     }
     if (session.state === 'ONBOARDING_DISGUISE_KEY') {
       session.disguiseKeyword = incomingMsg.trim();
       session.state = 'ONBOARDING_PINCODE';
-      return sendTwiML(res, `Secret word saved. Lastly, what is your 6-digit Pincode? This helps me find nearby safe spaces if you ever need them.`);
+      return sendTwiML(res, ONBOARDING_PROMPTS[lang].pincode);
     }
     if (session.state === 'ONBOARDING_PINCODE') {
       const pin = extractPincode(incomingMsg);
@@ -156,24 +249,12 @@ const handleMessage = async (req, res) => {
       } else {
         session.savedArea = incomingMsg;
       }
-      // TASK 1: Immediate safety triage before entering SUPPORT
       session.state = 'POST_ONBOARDING_TRIAGE';
-      return sendTwiML(res,
-        `Thank you! Setup is complete. 🌸\n\n` +
-        `📝 *Quick Guide:*\n` +
-        `• Type *"${session.disguiseKeyword}"* to hide this chat immediately (Disguise Mode).\n` +
-        `• Type *SAKHI* or *EXIT* while in Disguise Mode to come back to me.\n` +
-        `• Type *HELP* anytime if you need emergency assistance.\n\n` +
-        `Before we continue —\n` +
-        `*Are you in danger right now?*\n\n` +
-        `1️⃣ Yes — I need help now\n` +
-        `2️⃣ No — I am safe`
-      );
+      return sendTwiML(res, ONBOARDING_PROMPTS[lang].complete(session.disguiseKeyword));
     }
   }
 
   // ── POST_ONBOARDING_TRIAGE ────────────────────────────────────────────────────
-  // TASK 1: Safety check after onboarding. Routes to emergency or support menu.
   const lower = incomingMsg?.toLowerCase().trim() || '';
   if (session.state === 'POST_ONBOARDING_TRIAGE') {
     const yesMatch = incomingMsg === '1' || /\b(yes|haan|ha)\b/.test(lower);
@@ -182,11 +263,8 @@ const handleMessage = async (req, res) => {
       responseText = await activateEmergency(sender, session);
     } else if (noMatch) {
       session.state = 'SUPPORT';
-      responseText = withHelpFooter(
-        `I am with you. 🌸\n\nHow can I help you today?\n1️⃣ Know my legal rights\n2️⃣ Find a nearby support centre\n3️⃣ Prepare an FIR\n4️⃣ Just talk`
-      );
+      responseText = withHelpFooter(GENERAL_PROMPTS[session.lang || 'en'].supportMenu);
     } else {
-      // Re-prompt — no state change
       responseText =
         `🌸 Before we continue —\n` +
         `*Are you in danger right now?*\n\n` +
@@ -196,12 +274,6 @@ const handleMessage = async (req, res) => {
     return sendTwiML(res, responseText);
   }
 
-  // Detect language for non-FIR states
-  if (incomingMsg && session.state !== 'FIR') {
-    session.lang = detectLang(incomingMsg);
-  }
-
-
   // ── PRIORITY 1: DISGUISE KEYWORD (silent emergency) ─────────────────────────
   const disguiseKw = session.disguiseKeyword;
   if (disguiseKw) {
@@ -209,12 +281,10 @@ const handleMessage = async (req, res) => {
     const normalizedSecret = disguiseKw.trim().toLowerCase();
 
     if (normalizedBody === normalizedSecret) {
-      // Activate emergency silently in background
       activateEmergency(sender, session).catch(err =>
         console.error('[Emergency] Silent activation error:', err.message)
       );
 
-      // Fix 2: Activate disguise and get immediate response
       const responseText = await activateDisguise(sender, session);
       return sendTwiML(res, responseText);
     }
@@ -228,14 +298,11 @@ const handleMessage = async (req, res) => {
 
   // ── PRIORITY 3: DISGUISE MODE ─────────────────────────────────────────────────
   if (session.state === 'DISGUISE') {
-    // EXIT disguise mode
     if (lower === 'help' || lower === 'exit' || lower === 'sakhi') {
       session.state = 'SUPPORT';
-      responseText = withHelpFooter(
-        `🌸 Sakhi is back.\n\nHow can I help you?\n\n1️⃣ Legal rights\n2️⃣ Find shelters\n3️⃣ FIR help\n4️⃣ Just talk`
-      );
+      responseText = withHelpFooter(GENERAL_PROMPTS[session.lang || 'en'].supportMenu);
+      return sendTwiML(res, responseText);
     } else {
-      // Otherwise continue fake cooking mode
       responseText = getDisguiseResponse(incomingMsg);
     }
     return sendTwiML(res, responseText);
@@ -252,7 +319,6 @@ const handleMessage = async (req, res) => {
     } else if (lower === '4' || lower === 'ok' || lower.includes('safe now') || lower.includes('i am safe')) {
       responseText = handleSafeNow(sender, session);
     } else {
-      // Any other message in emergency — re-show options in user's language
       const BASE_URL = (process.env.BASE_URL || 'https://sakhi.onrender.com').replace(/\/$/, '');
       const locationLink = session.locationToken ? `${BASE_URL}/loc/${session.locationToken}` : null;
       responseText = buildEmergencyMsg(session, locationLink);
@@ -272,12 +338,10 @@ const handleMessage = async (req, res) => {
     } else if (noMatch) {
       clearConfirmTimers(sender);
       session.state = 'SUPPORT';
-      responseText = withHelpFooter(
-        `Main yahan hoon. 🌸\n\nAapko kya chahiye?\n1️⃣ Aapke legal rights\n2️⃣ Nazdeeki shelter\n3️⃣ FIR ki taiyaari\n4️⃣ Bas baat karna`
-      );
+      responseText = withHelpFooter(GENERAL_PROMPTS[session.lang || 'en'].supportMenu);
       return sendTwiML(res, responseText);
     } else {
-      responseText = `Please reply:\n1️⃣ Yes — I need help now\n2️⃣ No — I am okay`;
+      responseText = GENERAL_PROMPTS[session.lang || 'en'].emergencyConfirm;
       return sendTwiML(res, responseText);
     }
   }
@@ -286,9 +350,7 @@ const handleMessage = async (req, res) => {
   if (HELP_TRIGGERS.includes(lower)) {
     session.state = 'TRIAGE';
     session.history = [];
-    responseText = withHelpFooter(
-      `Namaste 🌸 Main Sakhi hoon. Main yahan hoon aapke saath.\n\nKya aap abhi khatre mein hain?\n\nReply karein:\n1️⃣ HAAN - Mujhe ABHI madad chahiye\n2️⃣ NAHI - Mujhe guidance aur support chahiye`
-    );
+    responseText = withHelpFooter(GENERAL_PROMPTS[session.lang || 'en'].triage);
     return sendTwiML(res, responseText);
   }
 
@@ -298,16 +360,12 @@ const handleMessage = async (req, res) => {
       // Has active conversation — ask one clarifying question
       session.state = 'EMERGENCY_CONFIRM';
       startConfirmTimers(sender);
-      responseText =
-        `Are you in immediate danger right now? 🌸\n\n` +
-        `1️⃣ Yes — help me\n2️⃣ No — just talking`;
+      responseText = GENERAL_PROMPTS[session.lang || 'en'].emergencyConfirm;
     } else {
       // First message or inactive — skip clarification, go straight to confirm
       session.state = 'EMERGENCY_CONFIRM';
       startConfirmTimers(sender);
-      responseText =
-        `I am right here with you. Do you need emergency help right now? 🌸\n\n` +
-        `1️⃣ Yes — help me now\n2️⃣ No — I am okay`;
+      responseText = GENERAL_PROMPTS[session.lang || 'en'].emergencyConfirm;
     }
     return sendTwiML(res, responseText);
   }
@@ -446,10 +504,10 @@ const handleMessage = async (req, res) => {
       return sendTwiML(res, responseText);
     } else if (incomingMsg === '2') {
       session.state = 'SUPPORT_SHELTER_DISTRICT';
-      responseText = withHelpFooter(`Please enter your district, city, or area name. (e.g. Pune, Mumbai Suburban)`);
+      responseText = withHelpFooter(GENERAL_PROMPTS[session.lang || 'en'].shelterDistrict);
       return sendTwiML(res, responseText);
     } else {
-      responseText = withHelpFooter(`Please reply with 1 or 2.`);
+      responseText = withHelpFooter(GENERAL_PROMPTS[session.lang || 'en'].invalidOption);
       return sendTwiML(res, responseText);
     }
   }
@@ -459,17 +517,15 @@ const handleMessage = async (req, res) => {
     session.district = incomingMsg;
     // Assume state is Maharashtra for now since all current data is MH
     session.geoState = 'Maharashtra';
-    const shelter = getBestShelter(session);
+    
+    const districtResults = findByDistrict(session.district, session.geoState);
 
     // Reset state
     session.state = 'SUPPORT';
 
-    let msg = '';
-    if (shelter && !shelter.isFallback) {
-      msg = `Nearest Support Centre:\n\n📍 *${shelter.name}*\n📞 ${shelter.phone}\n\n📍 ${shelter.address}, ${shelter.district}, ${shelter.state} - ${shelter.pincode}\n`;
-    } else {
-      msg = `We couldn't find a support centre for ${incomingMsg}.\n\nPlease call Women Helpline: 181`;
-    }
+    // Get up to 3 results and format them using the new formatter
+    const topShelters = districtResults.slice(0, 3);
+    const msg = formatNearestSheltersResponse(topShelters);
 
     responseText = withHelpFooter(msg);
     return sendTwiML(res, responseText);
